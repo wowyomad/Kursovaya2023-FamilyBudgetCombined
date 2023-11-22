@@ -7,8 +7,8 @@ import java.sql.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "budgets", schema = "budget_db")
-public class BudgetsEntity {
+@Table(name = "budget", schema = "budget_db")
+public class BudgetEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "budget_id", nullable = false)
@@ -110,7 +110,7 @@ public class BudgetsEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BudgetsEntity that = (BudgetsEntity) o;
+        BudgetEntity that = (BudgetEntity) o;
         return budgetId == that.budgetId && Objects.equals(budgetName, that.budgetName) && Objects.equals(initialAmount, that.initialAmount) && Objects.equals(expectedIncome, that.expectedIncome) && Objects.equals(expectedSpending, that.expectedSpending) && Objects.equals(startDate, that.startDate) && Objects.equals(endDate, that.endDate) && Objects.equals(link, that.link);
     }
 

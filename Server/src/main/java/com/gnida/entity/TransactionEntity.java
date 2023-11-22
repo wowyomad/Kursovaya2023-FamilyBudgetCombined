@@ -7,8 +7,8 @@ import java.sql.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "transactions", schema = "budget_db")
-public class TransactionsEntity {
+@Table(name = "transaction", schema = "budget_db")
+public class TransactionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "transaction_id", nullable = false)
@@ -46,27 +46,16 @@ public class TransactionsEntity {
         this.amount = amount;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", referencedColumnName = "category_id", nullable = false)
-    private CategoriesEntity categoryId;
-
-    public CategoriesEntity getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(CategoriesEntity categoryId) {
-        this.categoryId = categoryId;
-    }
 
     @ManyToOne
     @JoinColumn(name = "subcategory_id", referencedColumnName = "subcategory_id", nullable = false)
-    private SubcategoriesEntity subcategoryId;
+    private SubcategoryEntity subcategoryId;
 
-    public SubcategoriesEntity getSubcategoryId() {
+    public SubcategoryEntity getSubcategoryId() {
         return subcategoryId;
     }
 
-    public void setSubcategoryId(SubcategoriesEntity subcategoryId) {
+    public void setSubcategoryId(SubcategoryEntity subcategoryId) {
         this.subcategoryId = subcategoryId;
     }
 
@@ -96,13 +85,13 @@ public class TransactionsEntity {
 
     @ManyToOne
     @JoinColumn(name = "budget_id", referencedColumnName = "budget_id", nullable = false)
-    private BudgetsEntity budgetId;
+    private BudgetEntity budgetId;
 
-    public BudgetsEntity getBudgetId() {
+    public BudgetEntity getBudgetId() {
         return budgetId;
     }
 
-    public void setBudgetId(BudgetsEntity budgetId) {
+    public void setBudgetId(BudgetEntity budgetId) {
         this.budgetId = budgetId;
     }
 
@@ -110,12 +99,12 @@ public class TransactionsEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TransactionsEntity that = (TransactionsEntity) o;
-        return transactionId == that.transactionId && categoryId == that.categoryId && subcategoryId == that.subcategoryId && userId == that.userId && budgetId == that.budgetId && Objects.equals(date, that.date) && Objects.equals(amount, that.amount) && Objects.equals(comment, that.comment);
+        TransactionEntity that = (TransactionEntity) o;
+        return transactionId == that.transactionId  && subcategoryId == that.subcategoryId && userId == that.userId && budgetId == that.budgetId && Objects.equals(date, that.date) && Objects.equals(amount, that.amount) && Objects.equals(comment, that.comment);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(transactionId, date, amount, categoryId, subcategoryId, comment, userId, budgetId);
+        return Objects.hash(transactionId, date, amount, subcategoryId, comment, userId, budgetId);
     }
 }

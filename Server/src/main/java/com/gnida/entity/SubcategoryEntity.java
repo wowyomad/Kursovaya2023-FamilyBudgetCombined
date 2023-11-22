@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
-@Table(name = "subcategories", schema = "budget_db")
-public class SubcategoriesEntity {
+@Table(name = "subcategory", schema = "budget_db")
+public class SubcategoryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "subcategory_id", nullable = false)
@@ -61,7 +61,7 @@ public class SubcategoriesEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SubcategoriesEntity that = (SubcategoriesEntity) o;
+        SubcategoryEntity that = (SubcategoryEntity) o;
         return subcategoryId == that.subcategoryId && categoryId == that.categoryId && Objects.equals(subcategoryName, that.subcategoryName) && Objects.equals(subcategoryValue, that.subcategoryValue);
     }
 

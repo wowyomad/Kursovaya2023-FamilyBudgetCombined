@@ -3,7 +3,7 @@ package com.gnida.entity;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class UserBudgetsEntityPK implements Serializable {
+public class UserBudgetEntityPK implements Serializable {
     private int userId;
     private int budgetId;
 
@@ -27,7 +27,7 @@ public class UserBudgetsEntityPK implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserBudgetsEntityPK that = (UserBudgetsEntityPK) o;
+        UserBudgetEntityPK that = (UserBudgetEntityPK) o;
         return userId == that.userId && budgetId == that.budgetId;
     }
 

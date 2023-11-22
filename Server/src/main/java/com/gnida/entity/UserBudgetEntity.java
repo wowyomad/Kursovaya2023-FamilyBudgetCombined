@@ -5,9 +5,9 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "user_budgets", schema = "budget_db")
-@IdClass(com.gnida.entity.UserBudgetsEntityPK.class)
-public class UserBudgetsEntity {
+@Table(name = "user_budget", schema = "budget_db")
+@IdClass(UserBudgetEntityPK.class)
+public class UserBudgetEntity {
     @Id
     @Column(name = "user_id", nullable = false)
     private int userId;
@@ -23,7 +23,7 @@ public class UserBudgetsEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserBudgetsEntity that = (UserBudgetsEntity) o;
+        UserBudgetEntity that = (UserBudgetEntity) o;
         return userId == that.userId && budgetId == that.budgetId && Objects.equals(role, that.role);
     }
 

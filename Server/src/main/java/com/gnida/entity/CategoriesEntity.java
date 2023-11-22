@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "categories", schema = "budget_db")
+@Table(name = "category", schema = "budget_db")
 public class CategoriesEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
