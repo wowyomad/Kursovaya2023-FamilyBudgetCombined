@@ -17,7 +17,7 @@ public class BudgetEntity implements Serializable {
     @Column(name = "budget_id", nullable = false)
     private int budgetId;
 
-    @Column(name = "budget_name", nullable = false, length = 255)
+    @Column(name = "budget_name", nullable = false)
     private String budgetName;
 
     @ColumnDefault("0")

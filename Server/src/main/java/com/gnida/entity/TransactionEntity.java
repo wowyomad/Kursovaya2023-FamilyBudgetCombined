@@ -2,6 +2,7 @@ package com.gnida.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -28,7 +29,8 @@ public class TransactionEntity implements Serializable {
     private SubcategoryEntity subcategoryId;
 
 
-    @Column(name = "comment", nullable = true, length = 255)
+    @ColumnDefault("")
+    @Column(name = "comment", nullable = false)
     private String comment;
 
     @ManyToOne

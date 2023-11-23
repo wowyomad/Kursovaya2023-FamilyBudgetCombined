@@ -15,11 +15,11 @@ public class UserInfoEntity implements Serializable {
     private UserEntity user;
 
     @Basic
-    @Column(name = "first_name", nullable = false, length = 255)
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @Basic
-    @Column(name = "second_name", nullable = false, length = 255)
+    @Column(name = "second_name", nullable = false)
     private String secondName;
 
 }

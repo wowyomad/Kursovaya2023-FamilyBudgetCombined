@@ -16,7 +16,7 @@ public class SubcategoryEntity implements Serializable {
     private int subcategoryId;
 
     @Basic
-    @Column(name = "subcategory_name", nullable = false, length = 255)
+    @Column(name = "subcategory_name", nullable = false)
     private String subcategoryName;
 
     @Basic

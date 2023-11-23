@@ -16,7 +16,7 @@ public class CategoriesEntity implements Serializable {
     private int categoryId;
 
     @Basic
-    @Column(name = "category_name", nullable = false, length = 255)
+    @Column(name = "category_name", nullable = false)
     private String categoryName;
 
     @Enumerated(EnumType.STRING)

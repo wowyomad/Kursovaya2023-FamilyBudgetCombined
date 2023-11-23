@@ -20,7 +20,7 @@ public class UserEntity implements Serializable {
     @Column(name = "user_role")
     private UserRole userRole = UserRole.USER;
 
-    @Column(name = "login", nullable = false, length = 255)
+    @Column(name = "login", nullable = false)
     private String login;
 
     @Column(name = "password", nullable = false, length = 60)
