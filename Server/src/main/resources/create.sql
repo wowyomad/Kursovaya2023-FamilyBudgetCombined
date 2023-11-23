@@ -10,7 +10,7 @@ CREATE TABLE user
 (
     user_id  INT PRIMARY KEY AUTO_INCREMENT,
     login    VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(60)     NOT NULL
+    password VARCHAR(60)  NOT NULL
 );
 
 CREATE TABLE user_info
