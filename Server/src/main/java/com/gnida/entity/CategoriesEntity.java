@@ -2,16 +2,12 @@ package com.gnida.entity;
 
 import com.gnida.enums.CategoryType;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 @Entity
-@Getter @Setter @EqualsAndHashCode @ToString
+@Data
 @Table(name = "category", schema = "budget_db")
 public class CategoriesEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)

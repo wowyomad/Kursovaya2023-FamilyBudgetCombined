@@ -1,17 +1,14 @@
 package com.gnida.entity;
 
+import com.gnida.enums.UserRole;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 
 @Entity
-@Getter @Setter @EqualsAndHashCode @ToString
+@Data
 @Table(name = "user", schema = "budget_db")
 public class UserEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,12 +16,13 @@ public class UserEntity implements Serializable {
     @Column(name = "user_id", nullable = false)
     private int userId;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_role")
+    private UserRole userRole = UserRole.USER;
 
-    @Basic
     @Column(name = "login", nullable = false, length = 255)
     private String login;
 
-    @Basic
     @Column(name = "password", nullable = false, length = 60)
     private String password;
 

@@ -9,8 +9,9 @@ DROP TABLE IF EXISTS user;
 CREATE TABLE user
 (
     user_id  INT PRIMARY KEY AUTO_INCREMENT,
-    login    VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(60)  NOT NULL
+    user_role     ENUM ('ADMIN', 'USER') NOT NULL DEFAULT 'USER',
+    login    VARCHAR(255)           NOT NULL UNIQUE,
+    password VARCHAR(60)            NOT NULL
 );
 
 CREATE TABLE user_info
@@ -36,9 +37,9 @@ CREATE TABLE budget
 CREATE TABLE category
 (
     category_id   INT PRIMARY KEY AUTO_INCREMENT,
-    category_name VARCHAR(255)                NOT NULL UNIQUE,
-    category_type ENUM ('INCOME', 'SPENDING') NOT NULL,
-    budget_id     INT                         NOT NULL,
+    category_name VARCHAR(255)               NOT NULL UNIQUE,
+    category_type ENUM ('INCOME', 'EXPENSE') NOT NULL,
+    budget_id     INT                        NOT NULL,
     FOREIGN KEY (budget_id) REFERENCES budget (budget_id)
 );
 
@@ -61,16 +62,16 @@ CREATE TABLE transaction
     user_id        INT            NOT NULL,
     budget_id      INT            NOT NULL,
     FOREIGN KEY (subcategory_id) REFERENCES subcategory (subcategory_id),
-    FOREIGN KEY (user_id) REFERENCES user_info (user_id),
+    FOREIGN KEY (user_id) REFERENCES user (user_id),
     FOREIGN KEY (budget_id) REFERENCES budget (budget_id)
 );
 
 CREATE TABLE user_budget
 (
-    user_id   INT          NOT NULL,
-    budget_id INT          NOT NULL,
-    role      VARCHAR(255) NOT NULL,
+    user_id   INT                       NOT NULL,
+    budget_id INT                       NOT NULL,
+    role      ENUM ('MEMBER', 'LEADER') NOT NULL,
     PRIMARY KEY (user_id, budget_id),
-    FOREIGN KEY (user_id) REFERENCES user_info (user_id),
+    FOREIGN KEY (user_id) REFERENCES user (user_id),
     FOREIGN KEY (budget_id) REFERENCES budget (budget_id)
 );

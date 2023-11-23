@@ -1,17 +1,13 @@
 package com.gnida.entity;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Objects;
 
 @Entity
-@Getter @Setter @EqualsAndHashCode @ToString
+@Data
 @Table(name = "subcategory", schema = "budget_db")
 public class SubcategoryEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,8 +20,8 @@ public class SubcategoryEntity implements Serializable {
     private String subcategoryName;
 
     @Basic
-    @Column(name = "subcategory_value", nullable = false, precision = 2)
-    private BigDecimal subcategoryValue;
+    @Column(name = "subcategory_value", nullable = false, precision = 14, scale = 2)
+    private BigDecimal subcategoryValue = BigDecimal.ZERO;
 
     @Basic
     @Column(name = "category_id", nullable = false)

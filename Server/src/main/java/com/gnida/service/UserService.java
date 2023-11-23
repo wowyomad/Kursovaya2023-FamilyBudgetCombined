@@ -3,7 +3,6 @@ package com.gnida.service;
 import com.gnida.DatabaseUtil;
 import com.gnida.dao.UserDao;
 import com.gnida.entity.UserEntity;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.hibernate.Session;
 
 import java.util.List;
