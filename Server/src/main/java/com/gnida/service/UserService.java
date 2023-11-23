@@ -12,21 +12,21 @@ public class UserService implements UserDao {
 
     @Override
     public List<UserEntity> getAll() {
-        try (Session session = DatabaseUtil.openSession()) {
+        try (Session session = DatabaseUtil.INSTANCE.openSession()) {
             return session.createQuery("FROM UserEntity", UserEntity.class).getResultList();
         }
     }
 
     @Override
     public UserEntity get(Integer key) {
-        try (Session session = DatabaseUtil.openSession()) {
+        try (Session session = DatabaseUtil.INSTANCE.openSession()) {
             return session.get(UserEntity.class, key);
         }
     }
 
     @Override
     public UserEntity save(UserEntity userEntity) {
-        try (Session session = DatabaseUtil.openSession()) {
+        try (Session session = DatabaseUtil.INSTANCE.openSession()) {
             session.beginTransaction();
             session.persist(userEntity);
             session.getTransaction().commit();

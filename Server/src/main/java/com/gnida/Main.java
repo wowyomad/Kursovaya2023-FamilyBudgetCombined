@@ -8,7 +8,7 @@ public class Main {
         UserService service = new UserService();
         UserEntity ue = new UserEntity();
         ue.setPassword("123");
-        ue.setLogin("111");
+        ue.setLogin("12321");
         service.save(ue);
         var list = service.getAll();
         System.out.println(list);
