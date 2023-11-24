@@ -11,8 +11,8 @@ import java.io.Serializable;
 @Data
 @Table(name = "user", schema = "budget_db")
 public class UserEntity implements Serializable {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", nullable = false)
     private int userId;
 

@@ -7,7 +7,7 @@ import org.hibernate.Session;
 
 import java.util.List;
 
-public class UserService implements UserDao {
+public class UserService extends UserDao {
 
 
     @Override

@@ -15,16 +15,14 @@ public class SubcategoryEntity implements Serializable {
     @Column(name = "subcategory_id", nullable = false)
     private int subcategoryId;
 
-    @Basic
     @Column(name = "subcategory_name", nullable = false)
     private String subcategoryName;
 
-    @Basic
     @Column(name = "subcategory_value", nullable = false, precision = 14, scale = 2)
     private BigDecimal subcategoryValue = BigDecimal.ZERO;
 
-    @Basic
-    @Column(name = "category_id", nullable = false)
-    private int categoryId;
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private CategoryEntity category;
 
 }

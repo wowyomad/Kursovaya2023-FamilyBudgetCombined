@@ -5,17 +5,17 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Data
 @Table(name = "category", schema = "budget_db")
-public class CategoriesEntity implements Serializable {
+public class CategoryEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "category_id", nullable = false)
     private int categoryId;
 
-    @Basic
     @Column(name = "category_name", nullable = false)
     private String categoryName;
 
@@ -23,8 +23,9 @@ public class CategoriesEntity implements Serializable {
     @Column(name = "category_type", nullable = false)
     private CategoryType categoryType;
 
-    @Basic
     @Column(name = "budget_id", nullable = false)
     private int budgetId;
 
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    Set<SubcategoryEntity> subcategories;
 }

@@ -7,7 +7,7 @@ import com.gnida.entity.UserInfoEntity;
 
 import java.util.List;
 
-public class UserInfoService implements UserInfoDao {
+public class UserInfoService extends UserInfoDao {
 
     @Override
     public List<UserInfoEntity> getAll() {

@@ -23,11 +23,9 @@ public class TransactionEntity implements Serializable {
     @Column(name = "amount", nullable = false, precision = 14, scale = 2)
     private BigDecimal amount;
 
-
     @ManyToOne
     @JoinColumn(name = "subcategory_id", referencedColumnName = "subcategory_id", nullable = false)
     private SubcategoryEntity subcategoryId;
-
 
     @ColumnDefault("")
     @Column(name = "comment", nullable = false)
@@ -37,10 +35,7 @@ public class TransactionEntity implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id",nullable = false)
     private UserEntity user;
 
-
     @ManyToOne
     @JoinColumn(name = "budget_id", referencedColumnName = "budget_id", nullable = false)
     private BudgetEntity budget;
-
-
 }

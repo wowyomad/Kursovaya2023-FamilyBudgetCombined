@@ -16,5 +16,4 @@ public class UserBudgetEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private UserBudgetRole role;
-
 }

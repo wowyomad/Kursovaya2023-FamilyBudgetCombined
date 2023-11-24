@@ -18,5 +18,4 @@ public class UserBudgetEntityPK implements Serializable {
     @ManyToOne
     @JoinColumn(name = "budget_id")
     BudgetEntity budget;
-
 }
