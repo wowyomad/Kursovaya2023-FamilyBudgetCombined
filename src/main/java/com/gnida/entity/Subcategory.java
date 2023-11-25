@@ -9,20 +9,20 @@ import java.math.BigDecimal;
 @Entity
 @Data
 @Table(name = "subcategory", schema = "budget_db")
-public class SubcategoryEntity implements Serializable {
+public class Subcategory implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "subcategory_id", nullable = false)
-    private int subcategoryId;
+    private int id;
 
     @Column(name = "subcategory_name", nullable = false)
-    private String subcategoryName;
+    private String name;
 
     @Column(name = "subcategory_value", nullable = false, precision = 14, scale = 2)
-    private BigDecimal subcategoryValue = BigDecimal.ZERO;
+    private BigDecimal value = BigDecimal.ZERO;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
-    private CategoryEntity category;
+    private Category category;
 
 }

@@ -11,14 +11,14 @@ import java.sql.Date;
 @Entity
 @Data
 @Table(name = "budget", schema = "budget_db")
-public class BudgetEntity implements Serializable {
+public class Budget implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "budget_id", nullable = false)
-    private int budgetId;
+    private int id;
 
     @Column(name = "budget_name", nullable = false)
-    private String budgetName;
+    private String name;
 
     @ColumnDefault("0")
     @Column(name = "initial_amount", nullable = false, precision = 14, scale = 2)
@@ -30,7 +30,7 @@ public class BudgetEntity implements Serializable {
 
     @ColumnDefault("0")
     @Column(name = "expected_spending", nullable = false, precision = 14, scale = 2)
-    private BigDecimal expectedSpending;
+    private BigDecimal expectedExpense;
 
     @Column(name = "start_date", nullable = false)
     private Date startDate;

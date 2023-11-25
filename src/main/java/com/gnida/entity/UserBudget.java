@@ -9,9 +9,9 @@ import java.io.Serializable;
 @Entity
 @Data
 @Table(name = "user_budget", schema = "budget_db")
-public class UserBudgetEntity implements Serializable {
+public class UserBudget implements Serializable {
     @EmbeddedId
-    UserBudgetEntityPK id;
+    UserBudgetPK id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)

@@ -10,12 +10,12 @@ import java.io.Serializable;
 @Getter @Setter @EqualsAndHashCode @ToString
 @Data
 @Embeddable
-public class UserBudgetEntityPK implements Serializable {
+public class UserBudgetPK implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
-    UserEntity user;
+    User user;
 
     @ManyToOne
     @JoinColumn(name = "budget_id")
-    BudgetEntity budget;
+    Budget budget;
 }

@@ -8,15 +8,15 @@ DROP TABLE IF EXISTS user;
 
 CREATE TABLE user
 (
-    user_id  INT PRIMARY KEY AUTO_INCREMENT,
-    user_role     ENUM ('ADMIN', 'USER') NOT NULL DEFAULT 'USER',
-    login    VARCHAR(255)           NOT NULL UNIQUE,
-    password VARCHAR(60)            NOT NULL
+    user_id   INT PRIMARY KEY AUTO_INCREMENT,
+    user_role ENUM ('ADMIN', 'USER') NOT NULL DEFAULT 'USER',
+    login     VARCHAR(255)           NOT NULL UNIQUE,
+    password  VARCHAR(60)            NOT NULL
 );
 
 CREATE TABLE user_info
 (
-    user_id     INT          NOT NULL UNIQUE,
+    user_id     INT PRIMARY KEY AUTO_INCREMENT,
     first_name  VARCHAR(255) NOT NULL,
     second_name VARCHAR(255) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES user (user_id)

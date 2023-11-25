@@ -1,36 +1,38 @@
 package com.gnida.service;
 
-import com.gnida.DatabaseUtil;
-import com.gnida.dao.UserDao;
-import com.gnida.entity.UserEntity;
-import org.hibernate.Session;
+import com.gnida.entity.User;
+import com.gnida.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public class UserService extends UserDao {
+@Service
+public class UserService {
+    UserRepository repository;
 
-
-    @Override
-    public List<UserEntity> getAll() {
-        try (Session session = DatabaseUtil.INSTANCE.openSession()) {
-            return session.createQuery("FROM UserEntity", UserEntity.class).getResultList();
-        }
+    @Autowired
+    public UserService(UserRepository repository) {
+        this.repository = repository;
     }
 
-    @Override
-    public UserEntity get(Integer key) {
-        try (Session session = DatabaseUtil.INSTANCE.openSession()) {
-            return session.get(UserEntity.class, key);
-        }
+    public List<User> findAll() {
+        return repository.findAll();
     }
 
-    @Override
-    public UserEntity save(UserEntity userEntity) {
-        try (Session session = DatabaseUtil.INSTANCE.openSession()) {
-            session.beginTransaction();
-            session.persist(userEntity);
-            session.getTransaction().commit();
-            return userEntity;
-        }
+    public User findById(Integer key) {
+        return repository.findById(key).orElseGet(() -> null);
+    }
+
+    public void save(User user) {
+        repository.save(user);
+    }
+
+    public User findByLoginAndPassword(String login, String password) {
+        return repository.findByLoginAndPassword(login, password);
+    }
+    public boolean existsByLogin(String login) {
+        return repository.existsByLogin(login);
     }
 }
+

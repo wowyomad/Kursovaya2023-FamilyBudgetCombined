@@ -11,11 +11,11 @@ import java.sql.Date;
 @Entity
 @Data
 @Table(name = "transaction", schema = "budget_db")
-public class TransactionEntity implements Serializable {
+public class Transaction implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "transaction_id", nullable = false)
-    private int transactionId;
+    private int id;
 
     @Column(name = "date", nullable = false)
     private Date date;
@@ -25,17 +25,17 @@ public class TransactionEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "subcategory_id", referencedColumnName = "subcategory_id", nullable = false)
-    private SubcategoryEntity subcategoryId;
+    private Subcategory subcategoryId;
 
-    @ColumnDefault("")
+    @ColumnDefault("''")
     @Column(name = "comment", nullable = false)
     private String comment;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id",nullable = false)
-    private UserEntity user;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "budget_id", referencedColumnName = "budget_id", nullable = false)
-    private BudgetEntity budget;
+    private Budget budget;
 }
