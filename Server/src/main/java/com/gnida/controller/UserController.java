@@ -27,6 +27,7 @@ public class UserController implements IController {
     }
 
     @Override
+    @Mapping("/all")
     public Response handleGet(Request request) {
         ObjectMapper objectMapper = new ObjectMapper();
         ModelMapper modelMapper = new ModelMapper();

@@ -1,6 +1,7 @@
 package com.gnida.service;
 
 import com.gnida.entity.User;
+import com.gnida.enums.UserRole;
 import com.gnida.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,10 @@ public class UserServiceImpl implements UserService {
     public boolean existsByLogin(String login) {
         return repository.existsByLogin(login);
     }
+
+    @Override
+    public boolean existsByRole(UserRole role) {return repository.existsByRole(role);}
+
 }
 
 

@@ -1,12 +1,12 @@
 package com.gnida.service;
 
 import com.gnida.entity.User;
+import com.gnida.enums.UserRole;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 
-@Service
 public interface UserService {
     List<User> findAll();
 
@@ -19,4 +19,6 @@ public interface UserService {
     User findByLogin(String login);
 
     boolean existsByLogin(String login);
+
+    boolean existsByRole(UserRole role);
 }

@@ -1,36 +1,42 @@
 package com.gnida;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gnida.entity.User;
+import com.gnida.domain.UserDto;
 import com.gnida.model.Request;
 import com.gnida.model.Response;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.List;
 
 public class Main {
-    public static void main(String[] args) {
-        User user = new User();
-        user.setLogin("vadzim");
-        user.setPassword("123");
-        ObjectMapper mapper = new ObjectMapper();
-        try (Socket s = new Socket("localhost", 1234);) {
-            System.out.println("Connected to server");
-            ObjectOutputStream ous = new ObjectOutputStream(s.getOutputStream());
-            ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
-            System.out.println("Got streams");
-            String json = mapper.writeValueAsString(user);
-            Request request = Request.builder().type(Request.RequestType.GET).path(Request.Path.USER).json(json).build();
-            ous.writeObject(request);
-            Response response = (Response) ois.readObject();
-            System.out.println(response);
+    public static void main(String[] args) throws IOException {
+        Socket s = new Socket("localhost", 12345);
+        System.out.println("Connected");
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        TypeReference<List<UserDto>> typeReference = new TypeReference<List<UserDto>>(){};
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        PrintWriter out = new PrintWriter(s.getOutputStream(), true);
+
+        System.out.println("Got streams");
+
+        ObjectMapper mapper = new ObjectMapper();
+        Request request = Request.builder()
+                .type(Request.RequestType.GET)
+                .path(Request.Path.USER)
+                .build();
+        String jsonRequest = mapper.writeValueAsString(request);
+        out.write(jsonRequest + '\n');
+        out.flush();
+        System.out.println("sent");
+        System.out.println("waiting");
+        String jsonResopnse = in.readLine();
+        Response response = mapper.readValue(jsonResopnse, Response.class);
+
+        List<UserDto> list = mapper.readValue(response.getJson(), typeReference);
+        System.out.println(list);
     }
 }

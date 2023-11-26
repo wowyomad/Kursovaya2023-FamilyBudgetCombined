@@ -4,12 +4,14 @@ package com.gnida.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Response implements Serializable {
     Status status;
     String json;
