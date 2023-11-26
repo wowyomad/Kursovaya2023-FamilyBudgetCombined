@@ -19,7 +19,10 @@ public class Request implements Serializable {
 
     public enum Path {
         BUDGET,
-        USER
+        USER,
+        TRANSACTION,
+        CATEGORY,
+        SUBCATEGORY
     }
 
 

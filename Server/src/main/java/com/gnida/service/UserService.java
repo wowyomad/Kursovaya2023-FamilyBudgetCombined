@@ -2,7 +2,6 @@ package com.gnida.service;
 
 import com.gnida.entity.User;
 import com.gnida.enums.UserRole;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

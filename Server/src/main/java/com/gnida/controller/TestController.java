@@ -1,26 +1,50 @@
 package com.gnida.controller;
 
+import com.gnida.mapping.GetMapping;
+import com.gnida.mapping.PostMapping;
+import com.gnida.model.Request;
 import com.gnida.model.Response;
 
-public class TestController {
+public class TestController implements IController {
 
-    @Mapping("/all")
-    public void getAllUsers() {
-
+    @GetMapping("/all")
+    public Response getAllUsers(Request request) {
+        try {
+            System.out.println(this.getClass().getMethod("getAllUsers", Request.class).getName());
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.builder().status(Response.Status.OK).build();
     }
 
-    @Mapping("/id")
-    public void getUserById(Integer id) {
-
+    @GetMapping("/id")
+    public Response getUserById(Request request) {
+        try {
+            System.out.println(this.getClass().getMethod("getUserById", Request.class).getName());
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.builder().status(Response.Status.OK).build();
     }
 
-    @Mapping("/login")
-    public void login(String login, String password) {
-
+    @PostMapping("/login")
+    public Response login(Request request) {
+        try {
+            System.out.println(this.getClass().getMethod("login", Request.class).getName());
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.builder().status(Response.Status.OK).build();
     }
 
-    @Mapping("/register")
-    public void register(String login, String password) {
-
+    @PostMapping("/register")
+    public Response register(Request request) {
+        try {
+            System.out.println(this.getClass().getMethod("register", Request.class).getName());
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+        return Response.builder().status(Response.Status.OK).build();
     }
+
 }

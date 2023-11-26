@@ -38,5 +38,15 @@ public class Response implements Serializable {
             .message("Json doesn't contain supported paramters")
             .build();
 
+    public static Response UnknownMethod = Response.builder()
+            .status(Status.BAD_REQUEST)
+            .message("Such endpoint doesn't exist")
+            .build();
+
+    public static Response WrongJsonParameters = Response.builder()
+            .status(Status.BAD_REQUEST)
+            .message("Wrong parameters passed in json")
+            .build();
+
 
 }
