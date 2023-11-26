@@ -1,21 +1,26 @@
 package com.gnida;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gnida.converter.Converter;
 import com.gnida.domain.UserDto;
 import com.gnida.model.Request;
 import com.gnida.model.Response;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Main {
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+public class ClientMain {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
+        SpringApplication.run(ClientMain.class, args);
+
+
         Socket s = new Socket("localhost", 12345);
         System.out.println("Connected");
 
