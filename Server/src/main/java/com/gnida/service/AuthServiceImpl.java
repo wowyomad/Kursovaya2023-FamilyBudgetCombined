@@ -4,12 +4,14 @@ import com.gnida.converter.Converter;
 import com.gnida.entity.User;
 import com.gnida.enums.UserRole;
 import com.gnida.model.Response;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
+    @NonNull
     UserService userService;
 
     @Override
