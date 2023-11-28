@@ -53,7 +53,9 @@ public class ClientThread implements Runnable{
         try {
             while(client.isConnected()) {
                 Request request = (Request) objectIn.readObject();
+                System.out.println(request);
                 Response response = dispatcher.dispatch(request);
+                System.out.println(response);
                 objectOut.writeObject(response);
             }
         } catch (SocketException e) {
@@ -62,9 +64,7 @@ public class ClientThread implements Runnable{
         catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            if(!client.isClosed()) {
-                e.printStackTrace();
-            }
+            //ничё
         }
         System.out.println("Client disconnected");
     }

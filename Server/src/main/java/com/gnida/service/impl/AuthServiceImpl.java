@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
         } else {
             user.setRole(UserRole.USER);
         }
-        userService.save(user);;
+        userService.save(user);
         return Response.builder()
                 .status(Response.Status.OK)
                 .message("New user registered")
