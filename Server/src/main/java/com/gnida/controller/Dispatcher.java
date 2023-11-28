@@ -21,17 +21,15 @@ public class Dispatcher {
     private final BudgetController budgetController;
     private final UserBudgetController userBudgetController;
     private final CategoryController categoryController;
-    private final SubcategoryController subcategoryController;
     private final TransactionController transactionController;
 
 
     public Response dispatch(Request request) {
-        IController controller = switch (request.getPath()) {
+        IController controller = switch (request.getRoute()) {
             case BUDGET -> budgetController;
             case USER -> userController;
             case TRANSACTION -> null;
             case CATEGORY -> null;
-            case SUBCATEGORY -> null;
         };
 
         if (controller == null) {

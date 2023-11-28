@@ -3,51 +3,42 @@ package com.gnida;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gnida.converter.Converter;
 import com.gnida.domain.UserDto;
+import com.gnida.entity.User;
 import com.gnida.model.Request;
 import com.gnida.model.Response;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.ApplicationContext;
 
 import java.io.*;
-import java.net.Socket;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-public class ClientMain {
+public class Main {
+    static ApplicationContext context;
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        SpringApplication.run(ClientMain.class, args);
+        context = SpringApplication.run(Main.class, args);
 
+        Client client = context.getBean(Client.class);
 
-        Socket s = new Socket("localhost", 12345);
-        System.out.println("Connected");
+        User user = new User();
+        user.setLogin("root");
+        user.setPassword("root");
 
-        Map<String, String> map = new HashMap<>();
-        map.put("login", "root");
-        map.put("password", "root");
+        String json = Converter.toJson(user);
 
-        String json = Converter.toJson(map);
-
-        ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
-        ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
-        System.out.println("got streams");
         TypeReference<List<UserDto>> typeReference = new TypeReference<List<UserDto>>() {
         };
 
         Request request = Request.builder()
                 .type(Request.RequestType.POST)
-                .endPoint("/register")
-                .path(Request.Path.USER)
+                .route(Request.Path.USER)
+                .endPoint("/login")
                 .json(json)
                 .build();
-        oos.writeObject(request);
-
-
         System.out.println(request);
-        Object responseObject = ois.readObject();
-        Response response = (Response) responseObject;
+        Response response = client.sendRequest(request);
         System.out.println(response);
 
 

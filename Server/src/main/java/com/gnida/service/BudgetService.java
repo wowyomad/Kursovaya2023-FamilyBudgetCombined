@@ -5,22 +5,11 @@ import com.gnida.repository.BudgetRepository;
 
 import java.util.List;
 
-public class BudgetService {
+public interface BudgetService {
+    public List<Budget> findAll();
 
-    BudgetRepository repository;
+    public Budget save(Budget entity);
 
-    public void delete(Budget entity) {
-        repository.delete(entity);
-    }
-    public List<Budget> findAll() {
-        return repository.findAll();
-    }
-
-    public Budget save(Budget entity) {
-        return repository.save(entity);
-    }
-
-    public Budget findById(Integer integer) {
-        return repository.findById(integer).orElseGet(() -> null);
-    }
+    public Budget findById(Integer integer);
+    public void delete(Budget entity);
 }

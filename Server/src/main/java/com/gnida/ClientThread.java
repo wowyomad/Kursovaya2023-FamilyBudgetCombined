@@ -1,6 +1,7 @@
 package com.gnida;
 
 import com.gnida.controller.Dispatcher;
+import com.gnida.entity.User;
 import com.gnida.model.Request;
 import com.gnida.model.Response;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,8 @@ import java.net.SocketException;
 public class ClientThread implements Runnable{
 
     private final Socket client;
+
+    private  User user;
 
     private Dispatcher dispatcher;
     private ObjectInputStream objectIn;

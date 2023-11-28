@@ -3,6 +3,7 @@ package com.gnida.entity;
 import com.gnida.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.io.Serializable;
 
@@ -16,8 +17,9 @@ public class User implements Serializable {
     @Column(name = "user_id")
     private int id;
 
+    @ColumnDefault(value = "'USER'")
     @Enumerated(EnumType.STRING)
-    @Column(name = "user_role")
+    @Column(name = "user_role", nullable = false)
     private UserRole role = UserRole.USER;
 
     @Column(name = "login", nullable = false, unique = true)

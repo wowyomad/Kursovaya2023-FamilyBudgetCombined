@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Data
@@ -12,8 +13,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 public class Request implements Serializable {
+
     RequestType type;
-    Path path;
+    Path route;
     String endPoint;
     String json;
 
@@ -21,8 +23,7 @@ public class Request implements Serializable {
         BUDGET,
         USER,
         TRANSACTION,
-        CATEGORY,
-        SUBCATEGORY
+        CATEGORY
     }
 
 

@@ -24,8 +24,8 @@ public class Transaction implements Serializable {
     private BigDecimal amount;
 
     @ManyToOne
-    @JoinColumn(name = "subcategory_id", referencedColumnName = "subcategory_id", nullable = false)
-    private Subcategory subcategoryId;
+    @JoinColumn(name = "category_id", referencedColumnName = "category_id", nullable = false)
+    private Category category;
 
     @ColumnDefault("''")
     @Column(name = "comment", nullable = false)

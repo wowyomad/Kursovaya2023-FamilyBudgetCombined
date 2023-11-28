@@ -1,8 +1,9 @@
-package com.gnida.service;
+package com.gnida.service.impl;
 
 import com.gnida.entity.User;
 import com.gnida.enums.UserRole;
 import com.gnida.repository.UserRepository;
+import com.gnida.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,9 +1,11 @@
-package com.gnida.service;
+package com.gnida.service.impl;
 
 import com.gnida.converter.Converter;
 import com.gnida.entity.User;
 import com.gnida.enums.UserRole;
 import com.gnida.model.Response;
+import com.gnida.service.AuthService;
+import com.gnida.service.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

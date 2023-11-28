@@ -27,6 +27,10 @@ public class Category implements Serializable {
     @Column(name = "budget_id", nullable = false)
     private int budgetId;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    Set<Subcategory> subcategories;
+    @ManyToOne
+    @JoinColumn(name = "parent_category", referencedColumnName = "category_id")
+    private Category parentCategory;
+
+    @OneToMany(mappedBy = "parentCategory", fetch = FetchType.LAZY)
+    Set<Category> subcategories;
 }
