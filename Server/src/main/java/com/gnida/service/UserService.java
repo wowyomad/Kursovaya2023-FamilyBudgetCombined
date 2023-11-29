@@ -11,7 +11,7 @@ public interface UserService {
 
     User findById(Integer key);
 
-    void save(User user);
+    User save(User user);
 
     User findByLoginAndPassword(String login, String password);
 
@@ -20,4 +20,5 @@ public interface UserService {
     boolean existsByLogin(String login);
 
     boolean existsByRole(UserRole role);
+
 }

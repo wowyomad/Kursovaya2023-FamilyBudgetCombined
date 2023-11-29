@@ -4,20 +4,19 @@ import com.gnida.entity.User;
 import com.gnida.enums.UserRole;
 import com.gnida.repository.UserRepository;
 import com.gnida.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    @NonNull
     UserRepository repository;
 
-    @Autowired
-    public UserServiceImpl(UserRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public List<User> findAll() {
@@ -30,8 +29,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void save(User user) {
-        System.out.println(repository.save(user));
+    public User save(User user) { return repository.save(user) ;
     }
 
     @Override
@@ -51,6 +49,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean existsByRole(UserRole role) {return repository.existsByRole(role);}
+
 
 }
 

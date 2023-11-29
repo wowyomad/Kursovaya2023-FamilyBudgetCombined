@@ -1,3 +1,16 @@
+drop table transaction;
+
+drop table category;
+
+drop table user_budget;
+
+drop table budget;
+
+drop table user_info;
+
+drop table user;
+
+
 CREATE TABLE user
 (
     user_id   INT PRIMARY KEY AUTO_INCREMENT,

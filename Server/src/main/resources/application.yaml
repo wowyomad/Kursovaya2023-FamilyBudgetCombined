@@ -6,7 +6,7 @@ spring:
     password: root
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
 app:
   address: 127.0.0.1

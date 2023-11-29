@@ -2,12 +2,11 @@ package com.gnida;
 
 import com.gnida.model.Request;
 import com.gnida.model.Response;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -17,7 +16,6 @@ import java.nio.channels.NotYetConnectedException;
 @Component
 public class Client {
     private Socket socket;
-
     private boolean isConnected;
 
     public boolean isConnected() {return this.isConnected;}

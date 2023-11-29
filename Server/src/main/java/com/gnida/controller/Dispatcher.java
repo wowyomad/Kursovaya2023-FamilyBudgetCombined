@@ -1,11 +1,13 @@
 package com.gnida.controller;
 
+import com.gnida.Server;
 import com.gnida.mapping.DeleteMapping;
 import com.gnida.mapping.GetMapping;
 import com.gnida.mapping.PostMapping;
 import com.gnida.mapping.UpdateMapping;
 import com.gnida.model.Request;
 import com.gnida.model.Response;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -23,14 +25,19 @@ public class Dispatcher {
     private final CategoryController categoryController;
     private final TransactionController transactionController;
 
+    @NonNull
+    private final Server server;
+
 
     public Response dispatch(Request request) {
         IController controller = switch (request.getRoute()) {
             case BUDGET -> budgetController;
             case USER -> userController;
-            case TRANSACTION -> null;
-            case CATEGORY -> null;
+            case TRANSACTION -> transactionController;
+            case CATEGORY -> categoryController;
         };
+
+
 
         if (controller == null) {
             return Response.builder().status(Response.Status.BAD_REQUEST).message("No such path available").build();

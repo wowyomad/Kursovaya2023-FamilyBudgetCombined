@@ -9,6 +9,8 @@ import java.io.Serializable;
 
 @Getter @Setter @EqualsAndHashCode @ToString
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Embeddable
 public class UserBudgetPK implements Serializable {
     @ManyToOne

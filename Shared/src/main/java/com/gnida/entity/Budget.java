@@ -6,7 +6,8 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDateTime;
+import java.util.Random;
 
 @Entity
 @Data
@@ -33,13 +34,17 @@ public class Budget implements Serializable {
     private BigDecimal expectedExpense;
 
     @Column(name = "start_date", nullable = false)
-    private Date startDate;
+    private LocalDateTime startDate;
 
     @Column(name = "end_date", nullable = false)
-    private Date endDate;
+    private LocalDateTime endDate;
+    @Column(name = "link", unique = true, length = 16)
+    private String link = "1";
 
-    @Column(name = "link", nullable = false, length = 36)
-    private String link;
-
-
+    @PrePersist
+    protected void onCreate() {
+        link = String.valueOf(Long.valueOf((new Random().nextLong(0, 100000))));
+        startDate = LocalDateTime.now();
+        endDate = startDate.plusMonths(1);
+    }
 }

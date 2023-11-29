@@ -16,6 +16,7 @@ public class AuthServiceImpl implements AuthService {
     @NonNull
     UserService userService;
 
+
     @Override
     public Response login(String login, String password) {
         User user = userService.findByLoginAndPassword(login, password);
@@ -25,6 +26,7 @@ public class AuthServiceImpl implements AuthService {
                     .message("User not found")
                     .build();
         }
+
         return Response.builder()
                 .status(Response.Status.OK)
                 .message("Logged in")
@@ -56,5 +58,6 @@ public class AuthServiceImpl implements AuthService {
                 .json(Converter.toJson(user))
                 .build();
     }
+
 }
 

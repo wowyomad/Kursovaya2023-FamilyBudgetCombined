@@ -20,12 +20,17 @@ public class Response implements Serializable {
     public enum Status {
         OK,
         NOT_FOUND,
-        CONFLICT, BAD_REQUEST, DAUN_NA_RAZRABE, DAUN_NA_POLZOVATELE, NO_CONTENT, ACCESS_DENIED
+        CONFLICT, BAD_REQUEST, DAUN_NA_RAZRABE, DAUN_NA_POLZOVATELE, NO_CONTENT, SESSION_NOT_FOUND, ACCESS_DENIED
     }
 
     public static Response UserNotFound = Response.builder()
             .status(Status.NO_CONTENT)
             .message("User not found")
+            .build();
+
+    public static Response UserSessionNotFound = Response.builder()
+            .status(Status.SESSION_NOT_FOUND)
+            .message("Response received but session doesn't exist")
             .build();
 
     public static Response UserAlreadyExist = Response.builder()
@@ -47,6 +52,8 @@ public class Response implements Serializable {
             .status(Status.BAD_REQUEST)
             .message("Wrong parameters passed in json")
             .build();
-
-
+    public static Response WrongEntityParameters = Response.builder()
+            .status(Status.BAD_REQUEST)
+            .message("Wrong object passed. Coudln't serialize")
+            .build();
 }

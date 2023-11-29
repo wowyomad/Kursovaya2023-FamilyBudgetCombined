@@ -3,24 +3,36 @@ package com.gnida.service.impl;
 import com.gnida.entity.Budget;
 import com.gnida.repository.BudgetRepository;
 import com.gnida.service.BudgetService;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
+@RequiredArgsConstructor
 public class BudgetServiceImpl implements BudgetService {
-    BudgetRepository repository;
+    @NonNull
+    BudgetRepository budgetRepository;
+
+    public List<Budget> findAllByUserId(Integer userId) {
+        return budgetRepository.findAllByUserId(userId);
+    }
 
     public void delete(Budget entity) {
-        repository.delete(entity);
+        budgetRepository.delete(entity);
     }
     public List<Budget> findAll() {
-        return repository.findAll();
+        return budgetRepository.findAll();
     }
 
     public Budget save(Budget entity) {
-        return repository.save(entity);
+        return budgetRepository.save(entity);
     }
 
     public Budget findById(Integer integer) {
-        return repository.findById(integer).orElseGet(() -> null);
+        return budgetRepository.findById(integer).orElseGet(() -> null);
     }
+
+
 }
