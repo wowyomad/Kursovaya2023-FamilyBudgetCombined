@@ -29,62 +29,7 @@ public class Main extends Application {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         context = SpringApplication.run(Main.class, args);
 
-        Client client = context.getBean(Client.class);
-
-        User registerUser = new User();
-        registerUser.setPassword("root");
-        registerUser.setLogin("root");
-        Request req = Request.builder()
-                .type(Request.RequestType.POST)
-                .route(Request.Route.USER)
-                .endPoint("/register")
-                .json(Converter.toJson(registerUser))
-                .build();
-        req.setEndPoint("/login");
-        User currentUser = null;
-        Response loginResponse = client.sendRequest(req);
-        System.out.println(loginResponse);
-        if(loginResponse.getStatus().equals(Response.Status.OK)) {
-            currentUser = Converter.fromJson(loginResponse.getJson(),User.class);
-        }
-        else {
-            req.setEndPoint("/register");
-            Response registerResponse = client.sendRequest(req);
-            System.out.println(registerResponse);
-        }
-
-        UserInfo info = new UserInfo();
-        info.setFirstName("Vadim");
-        info.setSecondName("Sundukov");
-        Response setInfoResponse = client.sendRequest(Request.builder()
-                .route(Request.Route.USER)
-                .endPoint(Mapping.User.info)
-                .type(Request.RequestType.UPDATE)
-                .json(Converter.toJson(info))
-                .build());
-        System.out.println(setInfoResponse);
-
-
-        Budget budget = new Budget();
-        budget.setName("Деньга на месяц");
-        budget.setExpectedIncome(new BigDecimal(5000));
-        budget.setExpectedExpense(new BigDecimal(2500));
-        budget.setInitialAmount(new BigDecimal(8000));
-
-        Request createBudgetRequest = Request.builder()
-                .type(Request.RequestType.POST)
-                .route(Request.Route.BUDGET)
-                .endPoint("/add")
-                .json(Converter.toJson(budget))
-                .build();
-
-        System.out.println(createBudgetRequest);
-
-        Response budgetResponse = client.sendRequest(createBudgetRequest);
-
-        System.out.println(budgetResponse);
-
-//        launch(args);
+        launch(args);
 
     }
 
