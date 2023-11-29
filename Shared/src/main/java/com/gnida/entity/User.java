@@ -28,6 +28,9 @@ public class User implements Serializable {
     @Column(name = "password", nullable = false, length = 60)
     private String password;
 
+    @Column(name = "isActive", nullable = false)
+    private boolean isActive;
+
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private UserInfo info;

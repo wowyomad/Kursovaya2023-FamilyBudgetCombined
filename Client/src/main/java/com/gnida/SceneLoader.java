@@ -12,7 +12,7 @@ public class SceneLoader {
     private static Stack<Parent> roots = new Stack<>();
     public static void loadScene(Scene current, String next) {
 
-        FXMLLoader fxmlLoader =new FXMLLoader(Main.class.getResource("/home-view.fxml"));
+        FXMLLoader fxmlLoader =new FXMLLoader(Main.class.getResource("/user-view.fxml"));
 
         roots.push(current.getRoot());
         try {

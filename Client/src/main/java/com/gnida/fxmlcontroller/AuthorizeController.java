@@ -70,11 +70,20 @@ public class AuthorizeController {
         Response response = client.sendRequest(request);
         Response.Status status = response.getStatus();
         System.out.println(response);
-        if (status == Response.Status.NOT_FOUND) {
-            errorMessage.setText("Пользователь не найден");
+        if (Response.Status.NOT_FOUND.equals(status)) {
+            errorMessage.setText(response.getMessage());
             errorMessage.setVisible(true);
-        } else {
-            SceneLoader.loadScene(loginButton.getScene(), "/home-view.fxml");
+        } else if (Response.Status.NOT_ACTIVE.equals(status)) {
+            errorMessage.setText(response.getMessage());
+            errorMessage.setVisible(true);
+        }
+        else {
+            User currentUser = Converter.fromJson(response.getJson(), User.class);
+            SceneLoader.loadScene(loginButton.getScene(), 
+                    switch(currentUser.getRole()) {
+                        case USER -> "/user-view.fxml";
+                        case ADMIN -> "/admin-view.fxml";
+                    });;
         }
     }
 
@@ -99,7 +108,7 @@ public class AuthorizeController {
             errorMessage.setText("Введенный вами логин занят");
             errorMessage.setVisible(true);
         } else {
-            SceneLoader.loadScene(registerButton.getScene(), "/home-view.fxml");
+            SceneLoader.loadScene(registerButton.getScene(), "/user-view.fxml");
 
         }
 

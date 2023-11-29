@@ -20,7 +20,7 @@ public class Response implements Serializable {
     public enum Status {
         OK,
         NOT_FOUND,
-        CONFLICT, BAD_REQUEST, DAUN_NA_RAZRABE, DAUN_NA_POLZOVATELE, NO_CONTENT, SESSION_NOT_FOUND, ACCESS_DENIED
+        CONFLICT, BAD_REQUEST, DAUN_NA_RAZRABE, DAUN_NA_POLZOVATELE, NO_CONTENT, SESSION_NOT_FOUND, NOT_ACTIVE, ACCESS_DENIED
     }
 
     public static Response UserNotFound = Response.builder()

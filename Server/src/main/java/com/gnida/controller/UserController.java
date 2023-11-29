@@ -82,6 +82,12 @@ public class UserController implements IController {
             Response response = authService.login(login, password);
             if(Response.Status.OK.equals(response.getStatus())) {
                 User user = Converter.fromJson(response.getJson(), User.class);
+                if (!user.isActive()) {
+                    return Response.builder()
+                            .status(Response.Status.NOT_ACTIVE)
+                            .message("Пользователь не активен")
+                            .build();
+                }
                 setSessionUser(request.getSessionId(), user);
             }
             return response;
