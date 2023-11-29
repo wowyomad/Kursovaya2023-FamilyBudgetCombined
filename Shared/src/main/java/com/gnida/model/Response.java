@@ -56,4 +56,10 @@ public class Response implements Serializable {
             .status(Status.BAD_REQUEST)
             .message("Wrong object passed. Coudln't serialize")
             .build();
+
+    public static Response IncorrectDataPassed = Response.builder()
+            .status(Status.DAUN_NA_POLZOVATELE)
+            .message("Получены некорректные данные")
+            .build();
+
 }

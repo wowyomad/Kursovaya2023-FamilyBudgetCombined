@@ -12,6 +12,7 @@ public final class Mapping {
     public static final class Budget {
 
         public static final String all = "/all";
+        public static final String user = "/user";
     }
 
     public static final class Transaction {

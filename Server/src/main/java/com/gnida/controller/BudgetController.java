@@ -1,10 +1,15 @@
 package com.gnida.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gnida.ClientSessionNotFound;
 import com.gnida.Server;
 import com.gnida.converter.Converter;
+import com.gnida.domain.BudgetDto;
 import com.gnida.entity.Budget;
 import com.gnida.entity.User;
+import com.gnida.mapping.GetMapping;
 import com.gnida.mapping.PostMapping;
 import com.gnida.mappings.Mapping;
 import com.gnida.model.Request;
@@ -14,6 +19,8 @@ import com.gnida.service.UserBudgetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -55,7 +62,42 @@ public class BudgetController implements IController {
                     .message("Не получилось добавить бюджет. Виноват сервер :(")
                     .build();
         }
+    }
+
+    @GetMapping("")
+    public Response findByCurrentUser(Request request) {
+        User currentUser = null;
+        try {
+            currentUser = Server.getInstance().getUserInfo(request.getSessionId());
+        } catch (ClientSessionNotFound e) {
+            e.printStackTrace();
+            return Response.IncorrectDataPassed;
+        }
+        List<Budget> budgets = budgetService.findbyUserId(currentUser.getId());
+        return Response.builder()
+                .status(Response.Status.OK)
+                .message("Найдено " + budgets.size() + " бюджетов")
+                .build();
+    }
+
+    @GetMapping(Mapping.Budget.user)
+    public Response findByUserId(Request request) {
+        ObjectMapper mapper = Converter.getInstance();
+        Integer userId = null;
+        try {
+            JsonNode node = mapper.readTree(request.getJson());
+            userId = node.get("id").asInt();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return Response.IncorrectDataPassed;
+        }
+        List<Budget> budgets = budgetService.findbyUserId(userId);
+        return Response.builder()
+                .status(Response.Status.OK)
+                .message("Найдено " + budgets.size() + " бюджетов")
+                .build();
 
     }
+
 
 }

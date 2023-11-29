@@ -9,4 +9,6 @@ public interface BudgetService {
     public Budget save(Budget entity);
     public Budget findById(Integer integer);
     public void delete(Budget entity);
+
+    List<Budget> findbyUserId(Integer userId);
 }

@@ -22,6 +22,12 @@ public class BudgetServiceImpl implements BudgetService {
     public void delete(Budget entity) {
         budgetRepository.delete(entity);
     }
+
+    @Override
+    public List<Budget> findbyUserId(Integer userId) {
+       return budgetRepository.findAllByUserId(userId);
+    }
+
     public List<Budget> findAll() {
         return budgetRepository.findAll();
     }

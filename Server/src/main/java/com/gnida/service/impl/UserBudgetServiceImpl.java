@@ -11,6 +11,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -30,4 +32,5 @@ public class UserBudgetServiceImpl implements UserBudgetService {
         userBudget.setRole(UserBudgetRole.LEADER);
         return repository.save(userBudget);
     }
+
 }

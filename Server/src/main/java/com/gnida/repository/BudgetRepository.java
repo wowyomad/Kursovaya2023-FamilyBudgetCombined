@@ -12,4 +12,6 @@ public interface BudgetRepository extends JpaRepository<Budget, Integer> {
     @Query("SELECT ub.id.budget FROM UserBudget ub WHERE ub.id.user.id = :userId")
     List<Budget> findAllByUserId(Integer userId);
 
+
+
 }
