@@ -13,7 +13,7 @@ import javafx.scene.control.*;
 
 import java.nio.channels.NotYetConnectedException;
 
-public class AuthorizeController {
+public class AuthorizeController extends GenericController{
 
     private static final String loginRegex = "^[a-zA-Z0-9_]+$";
     private static final String passwordRegex = "^[a-zA-Z\\d@$!%*?&#]+$";

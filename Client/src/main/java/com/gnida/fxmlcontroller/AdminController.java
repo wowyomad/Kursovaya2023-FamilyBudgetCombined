@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToggleButton;
 
-public class AdminController extends GenericController {
+public class AdminController extends GenericController{
     public Button backButton;
     public Button settingsButton;
     public Button budgetsButton;
@@ -38,7 +38,7 @@ public class AdminController extends GenericController {
 
 
     @FXML void initialize() {
-
+        backButton.setOnAction(actionEvent -> onBackButtonClick());
 
     }
 

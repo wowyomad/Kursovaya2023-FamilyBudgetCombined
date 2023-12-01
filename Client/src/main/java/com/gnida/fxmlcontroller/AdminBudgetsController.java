@@ -1,27 +1,18 @@
 package com.gnida.fxmlcontroller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.gnida.Client;
-import com.gnida.Main;
 import com.gnida.SceneManager;
-import com.gnida.converter.Converter;
 import com.gnida.domain.BudgetDto;
-import com.gnida.domain.UserDto;
-import com.gnida.entity.User;
-import com.gnida.model.Request;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.GridPane;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
-public class BudgetsController extends GenericController {
+public class AdminBudgetsController extends GenericController {
 
     public TableColumn<BudgetDto, String> initialColumn;
     public TableColumn<BudgetDto, String> leaderColumn;

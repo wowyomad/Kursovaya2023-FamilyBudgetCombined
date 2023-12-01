@@ -3,7 +3,7 @@ package com.gnida.fxmlcontroller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
-public class UserBudgetsController extends GenericController {
+public class UserProfileController extends GenericController {
     @FXML
     Button backButton;
 

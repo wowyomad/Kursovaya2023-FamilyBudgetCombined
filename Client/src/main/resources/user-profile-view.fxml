@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.gnida.fxmlcontroller.UserBudgetsController"
+            fx:controller="com.gnida.fxmlcontroller.UserProfileController"
             prefHeight="400.0" prefWidth="600.0">
 
     <Button fx:id="backButton" layoutX="24.0" layoutY="348.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="63.0"
@@ -18,4 +18,5 @@
             <Font size="14.0"/>
         </font>
     </Button>
+
 </AnchorPane>
