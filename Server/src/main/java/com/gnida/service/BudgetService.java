@@ -10,5 +10,5 @@ public interface BudgetService {
     public Budget findById(Integer integer);
     public void delete(Budget entity);
 
-    List<Budget> findbyUserId(Integer userId);
+    List<Budget> findAllByUserId(Integer userId);
 }

@@ -4,6 +4,7 @@ import com.gnida.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.ColumnDefault;
+import org.modelmapper.internal.bytebuddy.implementation.bind.annotation.DefaultCall;
 
 import java.io.Serializable;
 
@@ -28,6 +29,7 @@ public class User implements Serializable {
     @Column(name = "password", nullable = false, length = 60)
     private String password;
 
+    @ColumnDefault("true")
     @Column(name = "isActive", nullable = false)
     private boolean isActive;
 
@@ -36,3 +38,5 @@ public class User implements Serializable {
     private UserInfo info;
 
 }
+
+

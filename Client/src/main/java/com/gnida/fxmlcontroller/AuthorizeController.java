@@ -1,19 +1,17 @@
 package com.gnida.fxmlcontroller;
 
-import com.gnida.Client;
-import com.gnida.Main;
 import com.gnida.SceneManager;
-import com.gnida.converter.Converter;
 import com.gnida.entity.User;
 import com.gnida.model.Request;
 import com.gnida.model.Response;
+import com.gnida.requests.SuperRequest;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.nio.channels.NotYetConnectedException;
 
-public class AuthorizeController extends GenericController{
+public class AuthorizeController extends GenericController {
 
     private static final String loginRegex = "^[a-zA-Z0-9_]+$";
     private static final String passwordRegex = "^[a-zA-Z\\d@$!%*?&#]+$";
@@ -21,8 +19,6 @@ public class AuthorizeController extends GenericController{
     @FXML
     private Label errorMessage;
 
-    @FXML
-    private Button exitButton;
 
     @FXML
     private Button loginButton;
@@ -36,17 +32,17 @@ public class AuthorizeController extends GenericController{
     @FXML
     private PasswordField passwordField;
 
-    @FXML
-    public void onExitClicked() {
+    @Override
+    protected void onBackButtonClick() {
         Platform.exit();
     }
 
-    private final Client client;
+    @Override
+    protected void initialize() {
 
+    }
 
     public AuthorizeController() {
-        client = Main.getContext().getBean(Client.class);
-
         if (!client.isConnected()) {
             throw new NotYetConnectedException();
         }
@@ -60,31 +56,24 @@ public class AuthorizeController extends GenericController{
         User user = new User();
         user.setLogin(loginField.getText());
         user.setPassword(passwordField.getText());
-        Request request = Request.builder()
-                .type(Request.RequestType.POST)
-                .route(Request.Route.USER)
-                .endPoint("/login")
-                .json(Converter.toJson(user))
-                .build();
-
+        Request request = SuperRequest.POST_USER_LOGIN.object(user).build();
         Response response = client.sendRequest(request);
-        Response.Status status = response.getStatus();
-        System.out.println(response);
-        if (Response.Status.NOT_FOUND.equals(status)) {
-            errorMessage.setText(response.getMessage());
-            errorMessage.setVisible(true);
-        } else if (Response.Status.NOT_ACTIVE.equals(status)) {
-            errorMessage.setText(response.getMessage());
-            errorMessage.setVisible(true);
-        }
-        else {
-            User currentUser = Converter.fromJson(response.getJson(), User.class);
+
+        if(Response.Status.OK.equals(response.getStatus())) {
+            User currentUser = (User) response.getObject();
             SceneManager.loadScene(loginButton.getScene(),
                     switch(currentUser.getRole()) {
                         case USER -> "/user-view.fxml";
                         case ADMIN -> "/admin-view.fxml";
                     });;
+        } else {
+            showErrorMessage(response.getMessage());
         }
+    }
+
+    private void showErrorMessage(String message) {
+        errorMessage.setText(message);
+        errorMessage.setVisible(true);
     }
 
     @FXML
@@ -96,12 +85,7 @@ public class AuthorizeController extends GenericController{
         User user = new User();
         user.setLogin(loginField.getText());
         user.setPassword(passwordField.getText());
-        Request request = Request.builder()
-                .type(Request.RequestType.POST)
-                .route(Request.Route.USER)
-                .endPoint("/register")
-                .json(Converter.toJson(user))
-                .build();
+        Request request = SuperRequest.POST_USER_REGISTER.object(user).build();
         Response response = client.sendRequest(request);
         Response.Status status = response.getStatus();
         if (status == Response.Status.CONFLICT) {
@@ -109,7 +93,6 @@ public class AuthorizeController extends GenericController{
             errorMessage.setVisible(true);
         } else {
             SceneManager.loadScene(registerButton.getScene(), "/user-view.fxml");
-
         }
 
     }

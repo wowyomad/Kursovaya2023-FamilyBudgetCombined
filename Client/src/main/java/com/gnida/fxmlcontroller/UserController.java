@@ -7,9 +7,6 @@ import javafx.scene.control.Button;
 public class UserController extends GenericController {
 
     @FXML
-    private Button backButton;
-
-    @FXML
     private Button budgetsButton;
 
     @FXML
@@ -18,9 +15,9 @@ public class UserController extends GenericController {
     @FXML
     private Button settingsButton;
 
-    @FXML
-    void initialize() {
-        backButton.setOnAction(actionEvent -> SceneManager.getPreviousRoot(scene));
+    @Override
+    protected void initialize() {
+        backButton.setOnAction(actionEvent -> onBackButtonClick());
 
         budgetsButton.setOnAction(actionEvent -> SceneManager.loadScene(scene, "/user-budgets-view.fxml"));
 

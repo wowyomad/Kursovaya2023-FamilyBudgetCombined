@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService {
         return Response.builder()
                 .status(Response.Status.OK)
                 .message("Logged in")
-                .json(Converter.toJson(user))
+                .object(Converter.toJson(user))
                 .build();
 
     }
@@ -64,7 +64,7 @@ public class AuthServiceImpl implements AuthService {
         return Response.builder()
                 .status(Response.Status.OK)
                 .message("New user registered")
-                .json(Converter.toJson(user))
+                .object(Converter.toJson(user))
                 .build();
     }
 

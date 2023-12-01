@@ -34,34 +34,14 @@ public class AdminBudgetsController extends GenericController {
 
     ObservableList<BudgetDto> list;
 
-
-    @FXML
-    void initialize() {
+    @Override
+    protected void initialize() {
         contextMenu.getItems().addAll(deleteMenuItem, editMenuItem, addMenuItem);
-
         list = tableView.getItems();
-        list.add(BudgetDto.builder()
-                .name("сука")
-                        .name("говно")
-                        .leader("я")
-                        .expenses(BigDecimal.valueOf(2500))
-                        .income(BigDecimal.valueOf(4000))
-                        .initialAmount(BigDecimal.valueOf(5550))
-                        .isFinished(false)
-                        .total(BigDecimal.valueOf(-1500))
-                .build());
 
-        initialColumn.setCellValueFactory(budget -> new SimpleStringProperty(budget.getValue().getInitialAmount().toString()));
-        leaderColumn.setCellValueFactory(budget -> new SimpleStringProperty(budget.getValue().getLeader()));
-        nameColumn.setCellValueFactory(budget -> new SimpleStringProperty(budget.getValue().getName()));
-        incomeColumn.setCellValueFactory(budget -> new SimpleStringProperty(budget.getValue().getIncome().toString()));
-        expenseColumn.setCellValueFactory(budget -> new SimpleStringProperty(budget.getValue().getExpenses().toString()));
-        totalColumn.setCellValueFactory(budget -> new SimpleStringProperty(budget.getValue().getTotal().toString()));
-        finishedColumn.setCellValueFactory(budget -> new SimpleStringProperty(budget.getValue().isFinished() ? "Да" : "Нет"));
 
         tableView.setRowFactory(tv -> {
             TableRow<BudgetDto> row = new TableRow<>();
-
             row.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.SECONDARY && !row.isEmpty()) {
                     contextMenu.show(tableView, event.getScreenX(), event.getScreenY());

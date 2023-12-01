@@ -5,6 +5,7 @@ import com.gnida.model.Response;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.net.Socket;
 import java.nio.channels.NotYetConnectedException;
 
 @Component
+@Scope("singleton")
 public class Client {
     private Socket socket;
     private boolean isConnected;

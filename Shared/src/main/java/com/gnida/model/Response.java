@@ -14,7 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class Response implements Serializable {
     Status status;
-    String json;
+    Object object;
     String message;
 
     public enum Status {

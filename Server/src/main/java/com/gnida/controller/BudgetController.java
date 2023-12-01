@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gnida.ClientSessionNotFound;
 import com.gnida.Server;
 import com.gnida.converter.Converter;
-import com.gnida.domain.BudgetDto;
 import com.gnida.entity.Budget;
 import com.gnida.entity.User;
 import com.gnida.mapping.GetMapping;
@@ -32,7 +31,7 @@ public class BudgetController implements IController {
     @NonNull
     UserBudgetService userBudgetService;
 
-    @PostMapping(Mapping.Budget.all)
+    @PostMapping(Mapping.Budget.budget)
     public Response add(Request request) {
         Budget budget = null;
         User user = null;
@@ -42,19 +41,12 @@ public class BudgetController implements IController {
         } catch (ClientSessionNotFound e) {
             return Response.UserSessionNotFound;
         }
-        String json = request.getJson();
-        try {
-            budget = Converter.fromJson(json, Budget.class);
-        } catch (Exception e) {
-            System.out.println("Не удалось прочитать json: " + json + ". Ожидался " + Budget.class.getName());
-            return Response.WrongEntityParameters;
-        }
+        budget = (Budget)request.getObject();
         Budget savedBudget = budgetService.save(budget);
         if (savedBudget != null && userBudgetService.save(user, savedBudget) != null) {
             return Response.builder()
                     .status(Response.Status.OK)
                     .message("Бюджет успешно добавлен")
-                    .json(Converter.toJson(savedBudget))
                     .build();
         } else {
             return Response.builder()
@@ -64,7 +56,7 @@ public class BudgetController implements IController {
         }
     }
 
-    @GetMapping("")
+    @GetMapping(Mapping.Budget.current_user)
     public Response findByCurrentUser(Request request) {
         User currentUser = null;
         try {
@@ -73,27 +65,20 @@ public class BudgetController implements IController {
             e.printStackTrace();
             return Response.IncorrectDataPassed;
         }
-        List<Budget> budgets = budgetService.findbyUserId(currentUser.getId());
+        List<Budget> budgets = budgetService.findAllByUserId(currentUser.getId());
         ObjectMapper mapper = new ObjectMapper();
         return Response.builder()
                 .status(Response.Status.OK)
                 .message("Найдено " + budgets.size() + " бюджетов")
-                .json(Converter.toJson(budgets))
+                .object(Converter.toJson(budgets))
                 .build();
     }
 
     @GetMapping(Mapping.Budget.user)
     public Response findByUserId(Request request) {
-        ObjectMapper mapper = Converter.getInstance();
-        Integer userId = null;
-        try {
-            JsonNode node = mapper.readTree(request.getJson());
-            userId = node.get("id").asInt();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return Response.IncorrectDataPassed;
-        }
-        List<Budget> budgets = budgetService.findbyUserId(userId);
+        User user = (User)request.getObject();
+        int userId = user.getId();
+        List<Budget> budgets = budgetService.findAllByUserId(userId);
         return Response.builder()
                 .status(Response.Status.OK)
                 .message("Найдено " + budgets.size() + " бюджетов")

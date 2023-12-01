@@ -17,7 +17,7 @@ public class Request implements Serializable {
     RequestType type;
     Route route;
     String endPoint;
-    String json;
+    Object object;
     UUID sessionId;
 
     public enum Route {

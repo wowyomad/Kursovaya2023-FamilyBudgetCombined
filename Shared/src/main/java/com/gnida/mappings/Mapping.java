@@ -13,6 +13,8 @@ public final class Mapping {
 
         public static final String all = "/all";
         public static final String user = "/user";
+        public static final String budget = "/budget";
+        public static final String current_user = "/current_user";
     }
 
     public static final class Transaction {

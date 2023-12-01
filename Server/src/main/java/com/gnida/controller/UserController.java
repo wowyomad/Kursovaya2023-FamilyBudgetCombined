@@ -46,7 +46,7 @@ public class UserController implements IController {
         String json = Converter.toJson(users);
         return Response.builder()
                 .status(Response.Status.OK)
-                .json(json)
+                .object(json)
                 .build();
     }
 
@@ -54,12 +54,12 @@ public class UserController implements IController {
     public Response register(Request request) {
 
         try {
-            JsonNode node = mapper.readTree(request.getJson());
+            JsonNode node = mapper.readTree(request.getObject());
             String login = node.get("login").asText();
             String password = node.get("password").asText();
             Response response = authService.register(login, password);
             if(Response.Status.OK.equals(response.getStatus())) {
-                User user = Converter.fromJson(response.getJson(), User.class);
+                User user = Converter.fromJson(response.getObject(), User.class);
                 setSessionUser(request.getSessionId(), user);
             }
             return response;
@@ -76,12 +76,12 @@ public class UserController implements IController {
     @PostMapping(Mapping.User.login)
     public Response login(Request request) {
         try {
-            JsonNode node = mapper.readTree(request.getJson());
+            JsonNode node = mapper.readTree(request.getObject());
             String login = node.get("login").asText();
             String password = node.get("password").asText();
             Response response = authService.login(login, password);
             if(Response.Status.OK.equals(response.getStatus())) {
-                User user = Converter.fromJson(response.getJson(), User.class);
+                User user = Converter.fromJson(response.getObject(), User.class);
                 if (!user.isActive()) {
                     return Response.builder()
                             .status(Response.Status.NOT_ACTIVE)
@@ -105,7 +105,7 @@ public class UserController implements IController {
     @UpdateMapping(Mapping.User.info)
     public Response setInfo(Request request) {
         try {
-            JsonNode node = mapper.readTree(request.getJson());
+            JsonNode node = mapper.readTree(request.getObject());
             String firstName = node.get("firstName").asText();
             String secondName = node.get("secondName").asText();
             UserInfo info = new UserInfo();
@@ -119,7 +119,7 @@ public class UserController implements IController {
             user = userService.save(user);
             return Response.builder()
                     .status(Response.Status.OK)
-                    .json(Converter.toJson(user))
+                    .object(Converter.toJson(user))
                     .message("User saved")
                     .build();
 

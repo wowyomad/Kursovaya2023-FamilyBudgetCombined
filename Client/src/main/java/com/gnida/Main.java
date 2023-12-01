@@ -28,9 +28,7 @@ public class Main extends Application {
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         context = SpringApplication.run(Main.class, args);
-
         launch(args);
-
     }
 
     @Override
