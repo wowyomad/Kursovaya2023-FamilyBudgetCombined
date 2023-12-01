@@ -74,9 +74,11 @@ public class BudgetController implements IController {
             return Response.IncorrectDataPassed;
         }
         List<Budget> budgets = budgetService.findbyUserId(currentUser.getId());
+        ObjectMapper mapper = new ObjectMapper();
         return Response.builder()
                 .status(Response.Status.OK)
                 .message("Найдено " + budgets.size() + " бюджетов")
+                .json(Converter.toJson(budgets))
                 .build();
     }
 

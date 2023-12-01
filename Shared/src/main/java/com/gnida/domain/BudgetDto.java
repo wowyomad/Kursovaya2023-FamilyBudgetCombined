@@ -1,17 +1,19 @@
 package com.gnida.domain;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 public class BudgetDto {
     String name;
-    String login;
+    String leader;
     BigDecimal initialAmount;
     BigDecimal income;
     BigDecimal expenses;
-    LocalDateTime dateStarted;
-    LocalDateTime dateFinished;
+    BigDecimal total;
+    boolean  isFinished;
 }

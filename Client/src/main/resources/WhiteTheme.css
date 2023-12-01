@@ -1,0 +1,16 @@
+/* WhiteTheme.css */
+
+.root {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: black;
+}
+
+.button {
+    -fx-background-color: #b0b0b0;
+    -fx-text-fill: black;
+}
+
+.label {
+    -fx-background-color: #909090;
+    -fx-text-fill: black;
+}

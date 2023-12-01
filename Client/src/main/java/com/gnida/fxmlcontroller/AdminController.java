@@ -1,13 +1,13 @@
 package com.gnida.fxmlcontroller;
 
-import com.gnida.SceneLoader;
-import jakarta.annotation.PostConstruct;
+import com.gnida.SceneManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ToggleButton;
 
-public class AdminController {
+public class AdminController extends GenericController {
     public Button backButton;
     public Button settingsButton;
     public Button budgetsButton;
@@ -17,11 +17,11 @@ public class AdminController {
     private Scene currentScene;
 
     public void onBackClicked(ActionEvent actionEvent) {
-        SceneLoader.getPreviousRoot(backButton.getScene());
+        SceneManager.getPreviousRoot(backButton.getScene());
     }
 
     public void onBudgetsClicked(ActionEvent actionEvent) {
-
+        SceneManager.loadScene(scene, "/budgets-view.fxml");
     }
 
     public void onUsersClicked(ActionEvent actionEvent) {
@@ -35,4 +35,13 @@ public class AdminController {
     public void onSettnngsClicked(ActionEvent actionEvent) {
 
     }
+
+
+    @FXML void initialize() {
+
+
+    }
+
+
+
 }

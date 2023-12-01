@@ -1,5 +1,6 @@
 package com.gnida;
 
+import com.gnida.fxmlcontroller.GenericController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -7,12 +8,11 @@ import javafx.scene.Scene;
 import java.io.IOException;
 import java.util.Stack;
 
-public class SceneLoader {
-
+public class SceneManager {
     private static Stack<Parent> roots = new Stack<>();
-    public static void loadScene(Scene current, String next) {
 
-        FXMLLoader fxmlLoader =new FXMLLoader(Main.class.getResource("/user-view.fxml"));
+    public static void loadScene(Scene current, String next) {
+        FXMLLoader fxmlLoader =new FXMLLoader(Main.class.getResource(next));
 
         roots.push(current.getRoot());
         try {
@@ -20,10 +20,10 @@ public class SceneLoader {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         current.setRoot(fxmlLoader.getRoot());
-    }
+        ((GenericController)fxmlLoader.getController()).setSceneReference(current);
 
+    }
     public static void getPreviousRoot(Scene current) {
         if(!roots.isEmpty()) {
             current.setRoot(roots.pop());

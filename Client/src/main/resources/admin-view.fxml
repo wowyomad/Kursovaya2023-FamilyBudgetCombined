@@ -13,7 +13,7 @@
             <Glow />
          </effect>
          <children>
-            <Label layoutX="108.0" layoutY="24.0" text="Меню администратора">
+            <Label layoutX="108.0" layoutY="24.0" text="Меню администратора" alignment="CENTER">
                <font>
                   <Font size="36.0" />
                </font>

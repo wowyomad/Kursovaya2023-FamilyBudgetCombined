@@ -1,6 +1,6 @@
 package com.gnida.fxmlcontroller;
 
-import com.gnida.SceneLoader;
+import com.gnida.SceneManager;
 import com.gnida.model.Request;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -20,7 +20,7 @@ public class HomeController {
     @FXML
     void onBackClicked(ActionEvent event) {
         Scene scene = exitButton.getScene();
-        SceneLoader.getPreviousRoot(scene);
+        SceneManager.getPreviousRoot(scene);
     }
 
     @FXML

@@ -2,7 +2,7 @@ package com.gnida.fxmlcontroller;
 
 import com.gnida.Client;
 import com.gnida.Main;
-import com.gnida.SceneLoader;
+import com.gnida.SceneManager;
 import com.gnida.converter.Converter;
 import com.gnida.entity.User;
 import com.gnida.model.Request;
@@ -79,7 +79,7 @@ public class AuthorizeController {
         }
         else {
             User currentUser = Converter.fromJson(response.getJson(), User.class);
-            SceneLoader.loadScene(loginButton.getScene(), 
+            SceneManager.loadScene(loginButton.getScene(),
                     switch(currentUser.getRole()) {
                         case USER -> "/user-view.fxml";
                         case ADMIN -> "/admin-view.fxml";
@@ -108,7 +108,7 @@ public class AuthorizeController {
             errorMessage.setText("Введенный вами логин занят");
             errorMessage.setVisible(true);
         } else {
-            SceneLoader.loadScene(registerButton.getScene(), "/user-view.fxml");
+            SceneManager.loadScene(registerButton.getScene(), "/user-view.fxml");
 
         }
 
