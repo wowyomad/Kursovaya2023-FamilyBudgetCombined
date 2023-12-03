@@ -2,7 +2,10 @@ package com.gnida.entity;
 
 import com.gnida.enums.UserRole;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.modelmapper.internal.bytebuddy.implementation.bind.annotation.DefaultCall;
 
@@ -11,6 +14,9 @@ import java.io.Serializable;
 
 @Entity
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "user", schema = "budget_db")
 public class User implements Serializable {
     @Id

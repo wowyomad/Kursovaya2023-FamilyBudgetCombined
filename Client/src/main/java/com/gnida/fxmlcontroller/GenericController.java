@@ -17,19 +17,22 @@ public abstract class GenericController {
     protected Button backButton;
 
     @FXML
-    protected abstract void initialize();
+    protected void initialize() {
+        backButton.setOnAction(actionEvent -> onBackButtonClick());
+    }
 
     public GenericController() {
         client = Main.getContext().getBean("client", Client.class);
     }
+
     public final void setSceneReference(Scene scene) {
         this.scene = scene;
     }
 
+    @FXML
     protected void onBackButtonClick() {
         SceneManager.getPreviousRoot(scene);
     }
-
 
 
 }

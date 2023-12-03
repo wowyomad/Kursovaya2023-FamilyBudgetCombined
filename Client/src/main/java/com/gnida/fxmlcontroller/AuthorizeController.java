@@ -2,6 +2,7 @@ package com.gnida.fxmlcontroller;
 
 import com.gnida.SceneManager;
 import com.gnida.entity.User;
+import com.gnida.enums.UserRole;
 import com.gnida.model.Request;
 import com.gnida.model.Response;
 import com.gnida.requests.SuperRequest;
@@ -39,7 +40,6 @@ public class AuthorizeController extends GenericController {
 
     @Override
     protected void initialize() {
-
     }
 
     public AuthorizeController() {
@@ -63,8 +63,8 @@ public class AuthorizeController extends GenericController {
             User currentUser = (User) response.getObject();
             SceneManager.loadScene(loginButton.getScene(),
                     switch(currentUser.getRole()) {
-                        case USER -> "/user-view.fxml";
-                        case ADMIN -> "/admin-view.fxml";
+                        case USER -> "/home-user-view.fxml";
+                        case ADMIN -> "/home-admin-view.fxml";
                     });;
         } else {
             showErrorMessage(response.getMessage());
@@ -82,9 +82,7 @@ public class AuthorizeController extends GenericController {
             showIncorrectCredentialsAlert();
             return;
         }
-        User user = new User();
-        user.setLogin(loginField.getText());
-        user.setPassword(passwordField.getText());
+        User user = User.builder().login(loginField.getText()).password(passwordField.getText()).build();
         Request request = SuperRequest.POST_USER_REGISTER.object(user).build();
         Response response = client.sendRequest(request);
         Response.Status status = response.getStatus();
@@ -92,7 +90,11 @@ public class AuthorizeController extends GenericController {
             errorMessage.setText("Введенный вами логин занят");
             errorMessage.setVisible(true);
         } else {
-            SceneManager.loadScene(registerButton.getScene(), "/user-view.fxml");
+            UserRole role = ((User) response.getObject()).getRole();
+            SceneManager.loadScene(scene, switch(role) {
+                case USER -> "/home-user-view.fxml";
+                case ADMIN -> "/home-admin-view.fxml";
+            });
         }
 
     }

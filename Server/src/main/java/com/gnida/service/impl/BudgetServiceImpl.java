@@ -21,8 +21,9 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public List<Budget> findAllByUserId(Integer userId) {
-       return budgetRepository.findAllByUserId(userId);
+        return  budgetRepository.findAllByUserId(userId);
     }
+
 
     public List<Budget> findAll() {
         return budgetRepository.findAll();

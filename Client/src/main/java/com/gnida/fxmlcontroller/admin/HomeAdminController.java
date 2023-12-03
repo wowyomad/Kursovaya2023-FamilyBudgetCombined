@@ -1,25 +1,24 @@
-package com.gnida.fxmlcontroller;
+package com.gnida.fxmlcontroller.admin;
 
 import com.gnida.SceneManager;
+import com.gnida.fxmlcontroller.GenericController;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 
-public class AdminController extends GenericController {
+public class HomeAdminController extends GenericController {
 
     public Button settingsButton;
     public Button budgetsButton;
     public Button transactionsButton;
     public Button usersButton;
 
-    public void onBackClicked(ActionEvent actionEvent) {
-        SceneManager.getPreviousRoot(backButton.getScene());
-    }
-
     public void onBudgetsClicked(ActionEvent actionEvent) {
-        SceneManager.loadScene(scene, "/admin-budgets-view.fxml");
+
     }
 
-    public void onUsersClicked(ActionEvent actionEvent) {}
+    public void onUsersClicked(ActionEvent actionEvent) {
+
+    }
 
     public void onTransactionsClicked(ActionEvent actionEvent) {
 
@@ -31,10 +30,10 @@ public class AdminController extends GenericController {
 
     @Override
     protected void initialize() {
-        backButton.setOnAction(actionEvent -> super.onBackButtonClick());
+        super.initialize();
         transactionsButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, "/admin-transactions-view.fxml"));
         budgetsButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, "/admin-budgets-view.fxml"));
-        usersButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, "/admin-view.fxml"));
+        usersButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, "/home-admin-view.fxml"));
         settingsButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, "/settings-view.fxml"));
     }
 

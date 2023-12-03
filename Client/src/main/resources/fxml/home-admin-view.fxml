@@ -5,13 +5,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gnida.fxmlcontroller.AdminController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gnida.fxmlcontroller.admin.HomeAdminController">
    <Label alignment="CENTER" layoutX="108.0" layoutY="24.0" text="Меню администратора" AnchorPane.leftAnchor="108.0" AnchorPane.rightAnchor="108.0" AnchorPane.topAnchor="24.0">
       <font>
          <Font size="36.0" />
       </font>
    </Label>
-   <Button fx:id="backButton" alignment="CENTER" layoutX="14.0" layoutY="361.0" mnemonicParsing="false" onAction="#onBackClicked" text="Назад" />
+   <Button fx:id="backButton" alignment="CENTER" layoutX="14.0" layoutY="361.0" mnemonicParsing="false" onAction="#onBackButtonClick" text="Назад" />
    <Button fx:id="budgetsButton" alignment="CENTER" layoutX="14.0" layoutY="129.0" mnemonicParsing="false" onAction="#onBudgetsClicked" prefHeight="59.0" prefWidth="158.0" text="Бюджеты" />
    <Button fx:id="usersButton" alignment="CENTER" layoutX="221.0" layoutY="129.0" mnemonicParsing="false" onAction="#onUsersClicked" prefHeight="59.0" prefWidth="158.0" text="Пользователи" />
    <Button fx:id="transactionsButton" alignment="CENTER" layoutX="428.0" layoutY="129.0" mnemonicParsing="false" onAction="#onTransactionsClicked" prefHeight="59.0" prefWidth="158.0" text="Транзацкии" />
