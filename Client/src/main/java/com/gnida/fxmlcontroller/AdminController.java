@@ -35,7 +35,7 @@ public class AdminController extends GenericController {
         transactionsButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, "/admin-transactions-view.fxml"));
         budgetsButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, "/admin-budgets-view.fxml"));
         usersButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, "/admin-view.fxml"));
-        settingsButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, "/setting-view.fxml"));
+        settingsButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, "/settings-view.fxml"));
     }
 
 

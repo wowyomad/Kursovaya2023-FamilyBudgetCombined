@@ -1,11 +1,7 @@
 package com.gnida.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gnida.ClientSessionNotFound;
 import com.gnida.Server;
-import com.gnida.converter.Converter;
 import com.gnida.entity.Budget;
 import com.gnida.entity.User;
 import com.gnida.mapping.GetMapping;
@@ -33,27 +29,20 @@ public class BudgetController implements IController {
 
     @PostMapping(Mapping.Budget.budget)
     public Response add(Request request) {
-        Budget budget = null;
-        User user = null;
+        User user;
         try {
             user = Server.getInstance().getUserInfo(request.getSessionId());
             if (user == null) throw new ClientSessionNotFound();
         } catch (ClientSessionNotFound e) {
             return Response.UserSessionNotFound;
         }
-        budget = (Budget)request.getObject();
+        Budget budget = (Budget) request.getObject();
         Budget savedBudget = budgetService.save(budget);
-        if (savedBudget != null && userBudgetService.save(user, savedBudget) != null) {
-            return Response.builder()
-                    .status(Response.Status.OK)
-                    .message("Бюджет успешно добавлен")
-                    .build();
-        } else {
-            return Response.builder()
-                    .status(Response.Status.DAUN_NA_RAZRABE)
-                    .message("Не получилось добавить бюджет. Виноват сервер :(")
-                    .build();
-        }
+        userBudgetService.save(user, savedBudget);
+        return Response.builder()
+                .status(Response.Status.OK)
+                .message("Бюджет успешно добавлен")
+                .build();
     }
 
     @GetMapping(Mapping.Budget.current_user)
@@ -61,27 +50,23 @@ public class BudgetController implements IController {
         User currentUser = null;
         try {
             currentUser = Server.getInstance().getUserInfo(request.getSessionId());
+            request.setObject(currentUser);
         } catch (ClientSessionNotFound e) {
             e.printStackTrace();
             return Response.IncorrectDataPassed;
         }
-        List<Budget> budgets = budgetService.findAllByUserId(currentUser.getId());
-        ObjectMapper mapper = new ObjectMapper();
-        return Response.builder()
-                .status(Response.Status.OK)
-                .message("Найдено " + budgets.size() + " бюджетов")
-                .object(Converter.toJson(budgets))
-                .build();
+        return findByUserId(request);
     }
 
     @GetMapping(Mapping.Budget.user)
     public Response findByUserId(Request request) {
-        User user = (User)request.getObject();
+        User user = (User) request.getObject();
         int userId = user.getId();
         List<Budget> budgets = budgetService.findAllByUserId(userId);
         return Response.builder()
                 .status(Response.Status.OK)
                 .message("Найдено " + budgets.size() + " бюджетов")
+                .object(budgets)
                 .build();
 
     }

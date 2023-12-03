@@ -10,6 +10,14 @@
     -fx-text-fill: black;
 }
 
+#registerButton {
+    -fx-background-color: #99FFFF;
+}
+
+#loginButton {
+    -fx-background-color: #99FF99;
+}
+
 .label {
     -fx-background-color: #909090;
     -fx-text-fill: black;

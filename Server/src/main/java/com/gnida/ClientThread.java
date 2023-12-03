@@ -41,8 +41,8 @@ public class ClientThread implements Runnable {
         try {
             while (clientSocket.isConnected()) {
                 Request request = (Request) objectIn.readObject();
-                System.out.println(request);
                 request.setSessionId(clientSessionId);
+                System.out.println(request);
                 Response response = dispatcher.dispatch(request);
                 System.out.println(response);
                 objectOut.writeObject(response);

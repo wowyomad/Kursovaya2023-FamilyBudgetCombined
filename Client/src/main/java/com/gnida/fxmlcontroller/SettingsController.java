@@ -3,25 +3,26 @@ package com.gnida.fxmlcontroller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
-public class UserSettingsController extends GenericController {
+public class SettingsController extends GenericController {
 
     @FXML
-    public Button themSwitchButton;
-    @FXML
-    Button backButton;
-
+    public Button switchThemeButton;
 
     boolean isDarkTheme = false;
-    @FXML
-    void initialize() {
+
+    @Override
+    protected void initialize() {
         backButton.setOnAction(actionEvent -> onBackButtonClick());
 
-        themSwitchButton.setOnAction(actionEvent -> {isDarkTheme = !isDarkTheme; updateTheme(); } );
+        switchThemeButton.setOnAction(actionEvent -> {
+            isDarkTheme = !isDarkTheme;
+            updateTheme();
+        });
 
     }
 
     void updateTheme() {
-        if(isDarkTheme) {
+        if (isDarkTheme) {
             scene.getStylesheets().clear();
             scene.getStylesheets().add("/DarkTheme.css");
         } else {

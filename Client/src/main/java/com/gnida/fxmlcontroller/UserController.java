@@ -23,7 +23,7 @@ public class UserController extends GenericController {
 
         profileButton.setOnAction(actionEvent -> SceneManager.loadScene(scene, "/user-profile-view.fxml"));
 
-        settingsButton.setOnAction(actionEvent -> SceneManager.loadScene(scene, "/user-setttings-view.fxml"));
+        settingsButton.setOnAction(actionEvent -> SceneManager.loadScene(scene, "/settings-view.fxml"));
 
     }
 

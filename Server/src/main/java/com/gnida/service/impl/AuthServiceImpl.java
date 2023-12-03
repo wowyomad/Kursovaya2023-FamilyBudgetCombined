@@ -15,38 +15,26 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-    @NonNull
-    UserService userService;
+    @NonNull UserService userService;
 
     @NonNull UserInfoRepository userInfoRepository;
-
 
 
     @Override
     public Response login(String login, String password) {
         User user = userService.findByLoginAndPassword(login, password);
         if (user == null) {
-            return Response.builder()
-                    .status(Response.Status.NOT_FOUND)
-                    .message("User not found")
-                    .build();
+            return Response.builder().status(Response.Status.NOT_FOUND).message("User not found").build();
         }
 
-        return Response.builder()
-                .status(Response.Status.OK)
-                .message("Logged in")
-                .object(Converter.toJson(user))
-                .build();
+        return Response.builder().status(Response.Status.OK).message("Logged in").object(user).build();
 
     }
 
     @Override
     public Response register(String login, String password) {
         if (userService.findByLogin(login) != null) {
-            return Response.builder()
-                    .status(Response.Status.CONFLICT)
-                    .message("Login is taken")
-                    .build();
+            return Response.builder().status(Response.Status.CONFLICT).message("Login is taken").build();
         }
         User user = new User();
         user.setLogin(login);
@@ -59,13 +47,10 @@ public class AuthServiceImpl implements AuthService {
         } else {
             user.setRole(UserRole.USER);
         }
+        user.setActive(true);
         userService.save(user);
-        userInfoRepository.save(user.getInfo());
-        return Response.builder()
-                .status(Response.Status.OK)
-                .message("New user registered")
-                .object(Converter.toJson(user))
-                .build();
+//        userInfoRepository.save(user.getInfo());
+        return Response.builder().status(Response.Status.OK).message("New user registered").object(user).build();
     }
 
 }

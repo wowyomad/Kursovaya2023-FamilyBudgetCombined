@@ -15,10 +15,6 @@ public class BudgetServiceImpl implements BudgetService {
     @NonNull
     BudgetRepository budgetRepository;
 
-    public List<Budget> findAllByUserId(Integer userId) {
-        return budgetRepository.findAllByUserId(userId);
-    }
-
     public void delete(Budget entity) {
         budgetRepository.delete(entity);
     }

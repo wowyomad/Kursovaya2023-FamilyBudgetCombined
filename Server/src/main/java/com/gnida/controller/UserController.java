@@ -1,13 +1,10 @@
 package com.gnida.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gnida.ClientSessionNotFound;
 import com.gnida.Main;
 import com.gnida.Server;
 import com.gnida.converter.Converter;
-import com.gnida.domain.UserDto;
 import com.gnida.entity.User;
 import com.gnida.entity.UserInfo;
 import com.gnida.mapping.GetMapping;
@@ -32,6 +29,7 @@ import java.util.UUID;
 public class UserController implements IController {
     ObjectMapper mapper = Converter.getInstance();
     ModelMapper modelMapper = new ModelMapper();
+
     @NonNull
     UserService userService;
 
@@ -39,107 +37,77 @@ public class UserController implements IController {
     AuthService authService;
 
     @GetMapping(Mapping.User.all)
-    public Response getUsers(Request request) {
-        List<UserDto> users = userService.findAll().stream()
-                .map(user -> modelMapper.map(user, UserDto.class))
-                .toList();
-        String json = Converter.toJson(users);
+    public Response findAll(Request request) {
+        List<User> users = userService.findAll();
         return Response.builder()
                 .status(Response.Status.OK)
-                .object(json)
+                .object(users)
                 .build();
     }
 
     @PostMapping(Mapping.User.register)
     public Response register(Request request) {
-
+        User user;
         try {
-            JsonNode node = mapper.readTree(request.getObject());
-            String login = node.get("login").asText();
-            String password = node.get("password").asText();
-            Response response = authService.register(login, password);
-            if(Response.Status.OK.equals(response.getStatus())) {
-                User user = Converter.fromJson(response.getObject(), User.class);
-                setSessionUser(request.getSessionId(), user);
-            }
-            return response;
-
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return Response.builder()
-                    .status(Response.Status.DAUN_NA_POLZOVATELE)
-                    .message("Wrong data passed. Expected {\"login\":{login},\"password\":{password}")
-                    .build();
+            user = (User) request.getObject();
+        } catch (ClassCastException | NullPointerException e) {
+            return Response.IncorrectDataPassed;
         }
+        Response response = authService.register(user.getLogin(), user.getPassword());
+        if (Response.Status.OK.equals(response.getStatus())) {
+            user = (User) response.getObject();
+            setUserSession(request.getSessionId(), user);
+        }
+        return response;
     }
 
     @PostMapping(Mapping.User.login)
     public Response login(Request request) {
+        User user;
         try {
-            JsonNode node = mapper.readTree(request.getObject());
-            String login = node.get("login").asText();
-            String password = node.get("password").asText();
-            Response response = authService.login(login, password);
-            if(Response.Status.OK.equals(response.getStatus())) {
-                User user = Converter.fromJson(response.getObject(), User.class);
-                if (!user.isActive()) {
-                    return Response.builder()
-                            .status(Response.Status.NOT_ACTIVE)
-                            .message("Пользователь не активен")
-                            .build();
-                }
-                setSessionUser(request.getSessionId(), user);
-            }
-            return response;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.builder()
-                    .status(Response.Status.DAUN_NA_POLZOVATELE)
-                    .message("Wrong data passed. Expected {\"login\":{login},\"password\":{password}")
-                    .build();
+            user = (User) request.getObject();
+        } catch (ClassCastException | NullPointerException e) {
+            return Response.IncorrectDataPassed;
         }
+        Response response = authService.login(user.getLogin(), user.getPassword());
+        if (Response.Status.OK.equals(response.getStatus())) {
+            user = (User) response.getObject();
+            if (!user.isActive()) {
+                return Response.builder()
+                        .status(Response.Status.NOT_ACTIVE)
+                        .message("Пользователь не активен")
+                        .build();
+            }
+            setUserSession(request.getSessionId(), user);
+        }
+        return response;
     }
 
 
     @UpdateMapping(Mapping.User.info)
-    public Response setInfo(Request request) {
+    public Response updateInfo(Request request) {
+        UserInfo info;
+        User user;
         try {
-            JsonNode node = mapper.readTree(request.getObject());
-            String firstName = node.get("firstName").asText();
-            String secondName = node.get("secondName").asText();
-            UserInfo info = new UserInfo();
-            info.setFirstName(firstName);
-            info.setSecondName(secondName);
-            User user = Server.getInstance().getUserInfo(request.getSessionId());
-            if(user == null) {
-                throw new ClientSessionNotFound();
-            }
-            user.setInfo(info);
-            user = userService.save(user);
-            return Response.builder()
-                    .status(Response.Status.OK)
-                    .object(Converter.toJson(user))
-                    .message("User saved")
-                    .build();
-
+            info = (UserInfo) request.getObject();
+        } catch (ClassCastException | NullPointerException e) {
+            return Response.IncorrectDataPassed;
+        }
+        try {
+            user = Server.getInstance().getUserInfo(request.getSessionId());
         } catch (ClientSessionNotFound e) {
-            e.printStackTrace();
-            return Response.builder()
-                    .status(Response.Status.DAUN_NA_RAZRABE)
-                    .message("No session for user")
-                    .build();
+            return Response.UserSessionNotFound;
         }
-        catch (Exception e) {
-            e.printStackTrace();
-            return Response.builder()
-                    .status(Response.Status.DAUN_NA_RAZRABE)
-                    .message("Wrong data passed. Expected {'firstName'{firstName],'secondName':{secondName}}")
-                    .build();
-        }
+        user.setInfo(info);
+        userService.save(user);
+        return Response.builder()
+                .status(Response.Status.OK)
+                .object(Converter.toJson(user))
+                .message("Информация о пользователе сохранена")
+                .build();
     }
 
-    private void setSessionUser(UUID id, User user) {
+    private void setUserSession(UUID id, User user) {
         try {
             Main.getBean(Server.class).putUserInfo(id, user);
         } catch (ClientSessionNotFound e) {

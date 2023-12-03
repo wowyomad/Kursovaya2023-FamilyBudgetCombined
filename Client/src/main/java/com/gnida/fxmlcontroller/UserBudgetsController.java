@@ -7,8 +7,8 @@ public class UserBudgetsController extends GenericController {
     @FXML
     Button backButton;
 
-    @FXML
-    void initialize() {
+    @Override
+    protected void initialize() {
         backButton.setOnAction(actionEvent -> onBackButtonClick());
 
     }

@@ -37,29 +37,28 @@ public class Dispatcher {
             case CATEGORY -> categoryController;
         };
 
-
-
         if (controller == null) {
             return Response.builder().status(Response.Status.BAD_REQUEST).message("No such path available").build();
         }
-        String endPoint = request.getEndPoint();
-
-        return switch (request.getType()) {
-            case GET -> processMethod(controller, endPoint, GetMapping.class, request);
-            case POST -> processMethod(controller, endPoint, PostMapping.class, request);
-            case DELETE -> processMethod(controller, endPoint, DeleteMapping.class, request);
-            case UPDATE -> processMethod(controller, endPoint, UpdateMapping.class, request);
+        Class<? extends Annotation> mapping = switch (request.getType()) {
+            case GET -> GetMapping.class;
+            case POST -> PostMapping.class;
+            case DELETE -> DeleteMapping.class;
+            case UPDATE -> UpdateMapping.class;
+            default -> throw new RuntimeException("Это как?");
         };
+        String endPoint = request.getEndPoint();
+        return processMethod(controller, endPoint, mapping, request);
     }
 
-    public static Response processMethod(Object object,
+    public static Response processMethod(IController controller,
                                          String desiredEndpoint,
                                          Class<? extends Annotation> annotationClass,
-                                         Object... parameters) {
-        Class<?> clazz = object.getClass();
-        Method[] methods = clazz.getDeclaredMethods();
+                                         Request request) {
+        Method[] methods = controller.getClass().getDeclaredMethods();
         try {
             for (Method method : methods) {
+                Annotation[] annotations = method.getAnnotations();
                 Annotation annotation = method.getAnnotation(annotationClass);
                 if (annotation != null) {
                     String value = (String) annotationClass.getMethod("value").invoke(annotation);
@@ -68,7 +67,7 @@ public class Dispatcher {
                             throw new RuntimeException("Return type of method is not Response. Method: " + method.getName());
                         }
                         System.out.println("Processing method: " + method.getName() + " with endpoint: " + desiredEndpoint);
-                        return (Response) method.invoke(object, parameters);
+                        return (Response) method.invoke(controller, request);
                     }
                 }
             }
