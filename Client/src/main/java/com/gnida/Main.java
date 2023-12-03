@@ -4,6 +4,7 @@ import com.gnida.converter.Converter;
 import com.gnida.entity.Budget;
 import com.gnida.entity.User;
 import com.gnida.entity.UserInfo;
+import com.gnida.fxmlcontroller.windows.Screen;
 import com.gnida.mappings.Mapping;
 import com.gnida.model.Request;
 import com.gnida.model.Response;
@@ -11,6 +12,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import lombok.Getter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -33,7 +35,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/authorize-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(Screen.AUTHORIZE));
         stage.setScene(new Scene(fxmlLoader.load()));
         stage.show();
     }

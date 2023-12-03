@@ -3,11 +3,14 @@ package com.gnida.fxmlcontroller;
 import com.gnida.SceneManager;
 import com.gnida.entity.User;
 import com.gnida.enums.UserRole;
+import com.gnida.fxmlcontroller.windows.Screen;
+import com.gnida.fxmlcontroller.windows.Theme;
 import com.gnida.model.Request;
 import com.gnida.model.Response;
 import com.gnida.requests.SuperRequest;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import java.nio.channels.NotYetConnectedException;
@@ -19,7 +22,6 @@ public class AuthorizeController extends GenericController {
 
     @FXML
     private Label errorMessage;
-
 
     @FXML
     private Button loginButton;
@@ -34,12 +36,8 @@ public class AuthorizeController extends GenericController {
     private PasswordField passwordField;
 
     @Override
-    protected void onBackButtonClick() {
-        Platform.exit();
-    }
-
-    @Override
     protected void initialize() {
+        super.initialize();
     }
 
     public AuthorizeController() {
@@ -61,11 +59,12 @@ public class AuthorizeController extends GenericController {
 
         if(Response.Status.OK.equals(response.getStatus())) {
             User currentUser = (User) response.getObject();
-            SceneManager.loadScene(loginButton.getScene(),
+            Scene scene = loginButton.getScene();
+            SceneManager.loadScene(scene,
                     switch(currentUser.getRole()) {
-                        case USER -> "/home-user-view.fxml";
-                        case ADMIN -> "/home-admin-view.fxml";
-                    });;
+                        case USER -> Screen.HOME_USER;
+                        case ADMIN -> Screen.HOME_ADMIN;
+                    });
         } else {
             showErrorMessage(response.getMessage());
         }
@@ -91,9 +90,10 @@ public class AuthorizeController extends GenericController {
             errorMessage.setVisible(true);
         } else {
             UserRole role = ((User) response.getObject()).getRole();
+            Scene scene = registerButton.getScene();
             SceneManager.loadScene(scene, switch(role) {
-                case USER -> "/home-user-view.fxml";
-                case ADMIN -> "/home-admin-view.fxml";
+                case USER -> Screen.HOME_USER;
+                case ADMIN -> Screen.HOME_ADMIN;
             });
         }
 

@@ -1,6 +1,8 @@
 package com.gnida;
 
 import com.gnida.fxmlcontroller.GenericController;
+import com.gnida.fxmlcontroller.windows.Theme;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -25,8 +27,16 @@ public class SceneManager {
 
     }
     public static void getPreviousRoot(Scene current) {
+        System.out.println("get root");
         if(!roots.isEmpty()) {
             current.setRoot(roots.pop());
+        } else  {
+            Platform.exit();
         }
+    }
+
+    public static void setSceneTheme(Scene scene, String theme_path_css) {
+//        scene.getStylesheets().clear();
+        scene.getStylesheets().add(Theme.DARK_THEME);
     }
 }

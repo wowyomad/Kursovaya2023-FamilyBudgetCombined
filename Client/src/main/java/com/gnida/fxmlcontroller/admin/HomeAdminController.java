@@ -2,6 +2,7 @@ package com.gnida.fxmlcontroller.admin;
 
 import com.gnida.SceneManager;
 import com.gnida.fxmlcontroller.GenericController;
+import com.gnida.fxmlcontroller.windows.Screen;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 
@@ -31,10 +32,11 @@ public class HomeAdminController extends GenericController {
     @Override
     protected void initialize() {
         super.initialize();
-        transactionsButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, "/admin-transactions-view.fxml"));
-        budgetsButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, "/admin-budgets-view.fxml"));
-        usersButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, "/home-admin-view.fxml"));
-        settingsButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, "/settings-view.fxml"));
+
+        transactionsButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, Screen.TRANSACTIONS_ALL));
+        budgetsButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, Screen.BUDGETS_ALL));
+        usersButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, Screen.USERS_ALL));
+        settingsButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, Screen.SETTINGS));
     }
 
 
