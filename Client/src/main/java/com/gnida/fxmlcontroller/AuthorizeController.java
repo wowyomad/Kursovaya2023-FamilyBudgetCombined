@@ -8,10 +8,11 @@ import com.gnida.fxmlcontroller.windows.Theme;
 import com.gnida.model.Request;
 import com.gnida.model.Response;
 import com.gnida.requests.SuperRequest;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.Background;
+import javafx.scene.paint.Color;
 
 import java.nio.channels.NotYetConnectedException;
 
@@ -45,6 +46,7 @@ public class AuthorizeController extends GenericController {
             throw new NotYetConnectedException();
         }
     }
+
     @FXML
     public void onLoginClicked() {
         if (!areLoginAndPasswordCorrect()) {
@@ -57,11 +59,10 @@ public class AuthorizeController extends GenericController {
         Request request = SuperRequest.POST_USER_LOGIN.object(user).build();
         Response response = client.sendRequest(request);
 
-        if(Response.Status.OK.equals(response.getStatus())) {
+        if (Response.Status.OK.equals(response.getStatus())) {
             User currentUser = (User) response.getObject();
             Scene scene = loginButton.getScene();
-            SceneManager.loadScene(scene,
-                    switch(currentUser.getRole()) {
+            SceneManager.loadScene(switch (currentUser.getRole()) {
                         case USER -> Screen.HOME_USER;
                         case ADMIN -> Screen.HOME_ADMIN;
                     });
@@ -71,6 +72,7 @@ public class AuthorizeController extends GenericController {
     }
 
     private void showErrorMessage(String message) {
+        errorMessage.setStyle("-fx-text-fill: red; -fx-background-color: transparent");
         errorMessage.setText(message);
         errorMessage.setVisible(true);
     }
@@ -91,7 +93,7 @@ public class AuthorizeController extends GenericController {
         } else {
             UserRole role = ((User) response.getObject()).getRole();
             Scene scene = registerButton.getScene();
-            SceneManager.loadScene(scene, switch(role) {
+            SceneManager.loadScene(switch (role) {
                 case USER -> Screen.HOME_USER;
                 case ADMIN -> Screen.HOME_ADMIN;
             });
@@ -117,7 +119,7 @@ public class AuthorizeController extends GenericController {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Неверный ввод");
         alert.setHeaderText(null);
-        alert.setContentText("Введенный логин или пароль содержат недопустмые символы. Попробуйте еще раз.");
+        alert.setContentText("Введенный логин или пароль содержат недопустимые символы. Попробуйте еще раз.");
         alert.showAndWait();
     }
 

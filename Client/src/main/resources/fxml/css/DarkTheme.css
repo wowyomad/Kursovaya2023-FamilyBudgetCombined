@@ -3,18 +3,131 @@
     -fx-text-fill: white;
 }
 
+
 .button {
     -fx-background-color: #404040;
     -fx-text-fill: white;
 }
 
-#registerButton {
-    -fx-background-color: #007F7F;
+.button:pressed {
+    -fx-background-color: #202020;
 }
 
-#loginButton {
-    -fx-background-color: #007F00;
+.button:hover {
+    -fx-background-color: #606060;
 }
+
+.button:pressed:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.6), 5, 0.0, 0, 1);
+}
+
+#registerButton {
+    -fx-background-color: #007F7F;
+    -fx-text-fill: #000000;
+}
+
+#registerButton:pressed {
+    -fx-background-color: #66CCCC;
+}
+
+#registerButton:hover {
+    -fx-background-color: #CCFFFF;
+}
+
+#registerButton:pressed:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
+}
+
+
+#loginButton {
+    -fx-background-color: #99FF99;
+    -fx-text-fill: #000000;
+}
+
+#loginButton:pressed {
+    -fx-background-color: #66CC66;
+}
+
+#loginButton:hover {
+    -fx-background-color: #CCFFCC;
+}
+
+#loginButton:pressed:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
+}
+
+#tableView {
+    -fx-control-inner-background: #2b2b2b; /* Dark background color */
+}
+
+.table-view .column-header {
+    -fx-background-color: #2b2b2b; /* Dark background color for column headers */
+    -fx-text-fill: white; /* White text color for column headers */
+}
+
+.table-view .cell {
+    -fx-background-color: #363636; /* Dark background color for cells */
+    -fx-text-fill: white; /* White text color for cells */
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #2b2b2b; /* Dark background color for odd rows */
+}
+
+.table-row-cell:even {
+    -fx-background-color: #323232; /* Dark background color for even rows */
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #555555; /* Brighter background color for selected rows */
+}
+
+.text-field {
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #999;
+    -fx-control-inner-background: #333; /* Dark background color */
+}
+
+.date-picker {
+    -fx-text-fill: white;
+    -fx-control-inner-background: #333; /* Dark background color */
+}
+
+.spinner {
+    -fx-text-fill: white;
+    -fx-control-inner-background: #333; /* Dark background color */
+}
+
+.combo-box {
+    -fx-text-fill: white; /* Text color */
+    -fx-background-color: #333; /* Background color */
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: #333; /* Background color */
+}
+
+.combo-box:disabled {
+    -fx-text-fill: white; /* Text color for inactive state */
+    -fx-background-color: #333; /* Background color for inactive state */
+}
+
+.context-menu {
+    -fx-background-color: #333; /* Background color */
+    -fx-text-fill: white; /* Text color */
+}
+
+/* MenuItem styles inside ContextMenu */
+.context-menu .menu-item {
+    -fx-background-color: #333; /* Background color */
+    -fx-text-fill: white; /* Text color */
+}
+
+/* Hover effect on MenuItem */
+.context-menu .menu-item:hover {
+    -fx-background-color: #555; /* Hover background color */
+}
+
 
 .label {
     -fx-background-color: #2f2f2f;

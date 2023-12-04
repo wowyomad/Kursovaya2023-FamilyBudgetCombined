@@ -9,4 +9,5 @@ public class Screen {
     public static final String USERS_ALL = "/fxml/admin/users-all-view.fxml";
     public static final String SETTINGS = "/fxml/settings-view.fxml";
     public static final String TRANSACTIONS_ALL = "/fxml/admin/transaction-all-view.fxml";
+    public static final String BUDGETS_USER = "/fxml/user/budgets-user-view.fxml";
 }

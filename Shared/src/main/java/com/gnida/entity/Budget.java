@@ -47,4 +47,8 @@ public class Budget implements Serializable {
         startDate = LocalDateTime.now();
         endDate = startDate.plusMonths(1);
     }
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private User owner;
 }

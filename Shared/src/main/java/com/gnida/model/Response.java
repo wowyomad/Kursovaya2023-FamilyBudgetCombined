@@ -25,12 +25,12 @@ public class Response implements Serializable {
 
     public static Response UserNotFound = Response.builder()
             .status(Status.NO_CONTENT)
-            .message("User not found")
+            .message("Пользователь не найден")
             .build();
 
     public static Response UserSessionNotFound = Response.builder()
             .status(Status.SESSION_NOT_FOUND)
-            .message("Response received but session doesn't exist")
+            .message("Получен запрос, но сессия не найдена")
             .build();
 
     public static Response UserAlreadyExist = Response.builder()
@@ -38,28 +38,20 @@ public class Response implements Serializable {
             .message("User already exists")
             .build();
 
-    public static Response UnknownJson = Response.builder()
-            .status(Status.NOT_FOUND)
-            .message("Json doesn't contain supported paramters")
-            .build();
 
     public static Response UnknownMethod = Response.builder()
             .status(Status.BAD_REQUEST)
-            .message("Such endpoint doesn't exist")
+            .message("Такого запроса не существует")
             .build();
 
-    public static Response WrongJsonParameters = Response.builder()
-            .status(Status.BAD_REQUEST)
-            .message("Wrong parameters passed in json")
-            .build();
     public static Response WrongEntityParameters = Response.builder()
             .status(Status.BAD_REQUEST)
-            .message("Wrong object passed. Coudln't serialize")
+            .message("Некорректный объект в теле запроса")
             .build();
 
     public static Response IncorrectDataPassed = Response.builder()
             .status(Status.DAUN_NA_POLZOVATELE)
-            .message("Получены некорректные данные")
+            .message("Некорректные данные в теле запроса")
             .build();
 
 }

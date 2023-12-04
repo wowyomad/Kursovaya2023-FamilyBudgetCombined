@@ -1,29 +1,33 @@
 package com.gnida;
 
 import com.gnida.fxmlcontroller.GenericController;
-import com.gnida.fxmlcontroller.windows.Theme;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.beans.factory.support.ScopeNotActiveException;
 
 import java.io.IOException;
 import java.util.Stack;
 
 public class SceneManager {
-    private static Stack<Parent> roots = new Stack<>();
+    @Setter @Getter
+    private static Scene mainScene;
 
-    public static void loadScene(Scene current, String next) {
+    private static final Stack<Parent> roots = new Stack<>();
+
+    public static void loadScene(String next) {
         FXMLLoader fxmlLoader =new FXMLLoader(Main.class.getResource(next));
 
-        roots.push(current.getRoot());
+        roots.push(mainScene.getRoot());
         try {
             fxmlLoader.load();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        current.setRoot(fxmlLoader.getRoot());
-        ((GenericController)fxmlLoader.getController()).setSceneReference(current);
+        mainScene.setRoot(fxmlLoader.getRoot());
 
     }
     public static void getPreviousRoot(Scene current) {
@@ -35,8 +39,9 @@ public class SceneManager {
         }
     }
 
-    public static void setSceneTheme(Scene scene, String theme_path_css) {
-//        scene.getStylesheets().clear();
-        scene.getStylesheets().add(Theme.DARK_THEME);
+    public static void setSceneTheme(String theme_path_css) {
+        mainScene.getStylesheets().clear();;
+        mainScene.getStylesheets().add(theme_path_css);
     }
+
 }

@@ -24,11 +24,13 @@ public class SettingsController extends GenericController {
     }
 
     void updateTheme() {
-        if (isDarkTheme) {
-            SceneManager.setSceneTheme(scene, Theme.DARK_THEME);
-        } else {
-            SceneManager.setSceneTheme(scene, Theme.WHITE_THEME);
-        }
+        SceneManager.setSceneTheme(switch(Boolean.hashCode(isDarkTheme)) {
+            case 1231 -> Theme.WHITE_THEME;
+            case 1237 -> Theme.DARK_THEME;
+            default -> throw new RuntimeException("oh no");
+        });
+
+//        SceneManager.setSceneTheme(isDarkTheme ? Theme.DARK_THEME : Theme.WHITE_THEME);
 
     }
 }

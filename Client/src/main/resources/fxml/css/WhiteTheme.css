@@ -6,19 +6,51 @@
 }
 
 .button {
-    -fx-background-color: #b0b0b0;
+    -fx-background-color: #c0c0c0;
     -fx-text-fill: black;
+    -fx-border-radius: 30;
 }
-
+.button:pressed {
+    -fx-background-color: #808080;
+}
+.button:hover {
+    -fx-background-color: #E0E0E0;
+}
+.button:pressed:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0.0, 0, 1);
+}
 #registerButton {
     -fx-background-color: #99FFFF;
+    -fx-text-fill: #000000;
+}
+#registerButton:pressed {
+    -fx-background-color: #CCFFFF;
+}
+#registerButton:hover {
+    -fx-background-color: #66CCCC;
+}
+#registerButton:pressed:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0.0, 0, 1);
 }
 
 #loginButton {
     -fx-background-color: #99FF99;
+    -fx-text-fill: #000000;
+}
+
+#loginButton:pressed {
+    -fx-background-color: #66CC66;
+}
+
+#loginButton:hover {
+    -fx-background-color: #CCFFCC;
+}
+
+#loginButton:pressed:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 5, 0.0, 0, 1);
 }
 
 .label {
-    -fx-background-color: #909090;
+    -fx-background-color: #a0a0a0;
     -fx-text-fill: black;
 }

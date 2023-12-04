@@ -1,21 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.Label?>
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gnida.fxmlcontroller.SettingsController">
-    <Label alignment="CENTER" layoutX="192.0" layoutY="23.0" prefWidth="600.0" prefHeight="100.0" text="Настройки">
-        <font>
-            <Font size="36.0"/>
-        </font>
-    </Label>
-
-    <Button fx:id="backButton" layoutX="24.0" layoutY="348.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="63.0" text="Назад" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" />
-   <Button fx:id="switchThemeButton" layoutX="173.0" layoutY="166.0" mnemonicParsing="false" prefHeight="69.0" prefWidth="254.0" text="Сменить тему">
-      <font>
-         <Font size="24.0" />
-      </font></Button>
-
-</AnchorPane>
+<GridPane prefHeight="472.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gnida.fxmlcontroller.SettingsController">
+   <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints maxHeight="200.0" minHeight="0.0" prefHeight="100.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="404.0" minHeight="10.0" prefHeight="289.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="0.0" prefHeight="100.0" vgrow="SOMETIMES" />
+   </rowConstraints>
+   <children>
+   
+                      <Button fx:id="backButton" mnemonicParsing="false" prefHeight="17.0" prefWidth="63.0" text="Назад" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
+         <GridPane.margin>
+            <Insets bottom="15.0" left="15.0" />
+         </GridPane.margin>
+      </Button>
+      <Button fx:id="switchThemeButton" mnemonicParsing="false" prefHeight="69.0" prefWidth="254.0" text="Сменить тему" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Button>
+       <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="112.0" prefWidth="600.0" text="Настройки" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+           <font>
+               <Font size="36.0" />
+           </font>
+       </Label>
+   </children>
+</GridPane>

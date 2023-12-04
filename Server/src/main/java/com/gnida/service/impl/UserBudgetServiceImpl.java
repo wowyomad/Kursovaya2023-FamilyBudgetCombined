@@ -11,8 +11,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +29,11 @@ public class UserBudgetServiceImpl implements UserBudgetService {
         userBudget.setId(new UserBudgetPK(user, budget));
         userBudget.setRole(UserBudgetRole.LEADER);
         return repository.save(userBudget);
+    }
+
+    @Override
+    public User findOwnerByBudgetId(Integer budgetId) {
+        return repository.findLeaderByBudgetId(budgetId );
     }
 
 }

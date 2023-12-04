@@ -63,6 +63,10 @@ public class BudgetController implements IController {
         User user = (User) request.getObject();
         int userId = user.getId();
         List<Budget> budgets = budgetService.findAllByUserId(userId);
+        budgets.forEach(budget -> {
+            User owner = userBudgetService.findOwnerByBudgetId(budget.getId());
+            budget.setOwner(owner);
+        });
         return Response.builder()
                 .status(Response.Status.OK)
                 .message("Найдено " + budgets.size() + " бюджетов")

@@ -12,31 +12,16 @@ public class HomeAdminController extends GenericController {
     public Button budgetsButton;
     public Button transactionsButton;
     public Button usersButton;
-
-    public void onBudgetsClicked(ActionEvent actionEvent) {
-
-    }
-
-    public void onUsersClicked(ActionEvent actionEvent) {
-
-    }
-
-    public void onTransactionsClicked(ActionEvent actionEvent) {
-
-    }
-
-    public void onSettnngsClicked(ActionEvent actionEvent) {
-
-    }
+    public Button reportsButton;
 
     @Override
     protected void initialize() {
         super.initialize();
 
-        transactionsButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, Screen.TRANSACTIONS_ALL));
-        budgetsButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, Screen.BUDGETS_ALL));
-        usersButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, Screen.USERS_ALL));
-        settingsButton.setOnAction(actionEvent -> SceneManager.loadScene(super.scene, Screen.SETTINGS));
+        transactionsButton.setOnAction(actionEvent -> SceneManager.loadScene(Screen.TRANSACTIONS_ALL));
+        budgetsButton.setOnAction(actionEvent -> SceneManager.loadScene(Screen.BUDGETS_ALL));
+        usersButton.setOnAction(actionEvent -> SceneManager.loadScene(Screen.USERS_ALL));
+        settingsButton.setOnAction(actionEvent -> SceneManager.loadScene(Screen.SETTINGS));
     }
 
 
