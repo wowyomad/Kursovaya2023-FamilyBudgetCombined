@@ -1,5 +1,6 @@
 package com.gnida;
 
+import com.gnida.entity.Budget;
 import com.gnida.model.Request;
 import com.gnida.model.Response;
 import jakarta.annotation.PostConstruct;
@@ -16,9 +17,17 @@ import java.nio.channels.NotYetConnectedException;
 
 @Component
 @Scope("singleton")
-public class Client {
+public class Client{
     private Socket socket;
     private boolean isConnected;
+
+    private Budget openedBudget;
+    void openBudget(Budget budget) {
+        openedBudget = budget;
+    }
+    void closeBudget() {
+        this.openedBudget = null;
+    }
 
     public boolean isConnected() {return this.isConnected;}
     private ObjectInputStream objectIn;
@@ -72,4 +81,5 @@ public class Client {
         }
         isConnected = false;
     }
+
 }

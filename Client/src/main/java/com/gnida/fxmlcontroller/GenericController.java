@@ -3,6 +3,7 @@ package com.gnida.fxmlcontroller;
 import com.gnida.Client;
 import com.gnida.Main;
 import com.gnida.SceneManager;
+import com.gnida.entity.Budget;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;

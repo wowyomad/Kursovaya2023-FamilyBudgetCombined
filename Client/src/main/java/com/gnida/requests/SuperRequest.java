@@ -1,5 +1,6 @@
 package com.gnida.requests;
 
+import com.gnida.mappings.Mapping;
 import com.gnida.model.Request;
 
 public final class SuperRequest {
@@ -17,4 +18,9 @@ public final class SuperRequest {
             .type(Request.RequestType.POST)
             .route(Request.Route.USER)
             .endPoint("/login");
+
+    public static Request.RequestBuilder GET_TRANSACTIONS_BY_BUDGET  = Request.builder()
+            .type(Request.RequestType.GET)
+            .route(Request.Route.TRANSACTION)
+            .endPoint(Mapping.Transaction.budget);
 }

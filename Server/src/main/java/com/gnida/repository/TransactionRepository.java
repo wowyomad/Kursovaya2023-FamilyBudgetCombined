@@ -13,7 +13,7 @@ import java.util.List;
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
     List<Transaction> findAllByUserId(Integer userId);
 
-    List<Transaction> findByBudgetId(Integer id);
+    List<Transaction> findAllByBudgetId(Integer id);
 
     @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t JOIN t.category c WHERE c.type = 'INCOME' AND t.budget.id = :budgetId")
     BigDecimal getSumOfIncomes(@Param("budgetId") Integer budgetId);
