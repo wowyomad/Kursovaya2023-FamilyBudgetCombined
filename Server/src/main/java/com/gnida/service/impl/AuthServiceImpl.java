@@ -1,6 +1,5 @@
 package com.gnida.service.impl;
 
-import com.gnida.converter.Converter;
 import com.gnida.entity.User;
 import com.gnida.entity.UserInfo;
 import com.gnida.enums.UserRole;

@@ -12,5 +12,5 @@ public interface TransactionService {
 
     List<Transaction> findAllByBudget(Budget budget);
 
-    void save(Transaction transaction);
+    Transaction save(Transaction transaction);
 }

@@ -23,9 +23,9 @@
             <PTableColumn fx:id="dateColumn" text="Дата" percentageWidth="0.11"/>
             <PTableColumn fx:id="amountColumn" text="Сумма" percentageWidth="0.15"/>
             <PTableColumn fx:id="categoryColumn" text="Категория" percentageWidth="0.15"/>
-            <PTableColumn fx:id="commentColumn" text="Комментарий" percentageWidth="0.15"/>
+            <PTableColumn fx:id="commentColumn" text="Комментарий" percentageWidth="0.20"/>
             <PTableColumn fx:id="userColumn" text="Пользователь" percentageWidth="0.11"/>
-            <PTableColumn fx:id="budgetColumn" text="Бюджет" percentageWidth="0.15"/>
+            <PTableColumn fx:id="budgetColumn" text="Бюджет" percentageWidth="0.20"/>
         </columns>
     </TableView>
     <Button fx:id="backButton" mnemonicParsing="false" text="Назад" GridPane.halignment="LEFT" GridPane.rowIndex="2"

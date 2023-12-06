@@ -1,10 +1,13 @@
 package com.gnida;
 
 import com.gnida.entity.Budget;
+import com.gnida.entity.User;
 import com.gnida.model.Request;
 import com.gnida.model.Response;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -22,10 +25,14 @@ public class Client{
     private boolean isConnected;
 
     private Budget openedBudget;
-    void openBudget(Budget budget) {
+
+    @Setter @Getter
+    private User currentUser;
+
+     public void openBudget(Budget budget) {
         openedBudget = budget;
     }
-    void closeBudget() {
+     public void closeBudget() {
         this.openedBudget = null;
     }
 
@@ -82,4 +89,8 @@ public class Client{
         isConnected = false;
     }
 
+
+    public Budget getBudget() {
+        return openedBudget;
+    }
 }

@@ -25,7 +25,7 @@ public class PTableColumn<S, T> extends javafx.scene.control.TableColumn<S, T> {
     });
   }
      
-  public final DoubleProperty percentageWidthProperty() {
+    public final DoubleProperty percentageWidthProperty() {
     return this.percentageWidth;
   }
      

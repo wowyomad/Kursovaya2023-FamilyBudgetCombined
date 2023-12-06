@@ -8,5 +8,6 @@ public interface UserBudgetService {
     UserBudget save(UserBudget entity);
     UserBudget save(User user, Budget budget);
 
-    User findOwnerByBudgetId(Integer budgetId);
+
+    User findOwnerByBudgetId(Budget budget);
 }

@@ -2,17 +2,13 @@ package com.gnida.fxmlcontroller;
 
 import com.gnida.SceneManager;
 import com.gnida.entity.User;
-import com.gnida.enums.UserRole;
 import com.gnida.fxmlcontroller.windows.Screen;
-import com.gnida.fxmlcontroller.windows.Theme;
 import com.gnida.model.Request;
 import com.gnida.model.Response;
 import com.gnida.requests.SuperRequest;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.Background;
-import javafx.scene.paint.Color;
 
 import java.nio.channels.NotYetConnectedException;
 
@@ -35,6 +31,8 @@ public class AuthorizeController extends GenericController {
 
     @FXML
     private PasswordField passwordField;
+
+    User user;
 
     @Override
     protected void initialize() {
@@ -60,12 +58,7 @@ public class AuthorizeController extends GenericController {
         Response response = client.sendRequest(request);
 
         if (Response.Status.OK.equals(response.getStatus())) {
-            User currentUser = (User) response.getObject();
-            Scene scene = loginButton.getScene();
-            SceneManager.loadScene(switch (currentUser.getRole()) {
-                        case USER -> Screen.HOME_USER;
-                        case ADMIN -> Screen.HOME_ADMIN;
-                    });
+            handleResponse(response, loginButton);
         } else {
             showErrorMessage(response.getMessage());
         }
@@ -91,14 +84,19 @@ public class AuthorizeController extends GenericController {
             errorMessage.setText("Введенный вами логин занят");
             errorMessage.setVisible(true);
         } else {
-            UserRole role = ((User) response.getObject()).getRole();
-            Scene scene = registerButton.getScene();
-            SceneManager.loadScene(switch (role) {
-                case USER -> Screen.HOME_USER;
-                case ADMIN -> Screen.HOME_ADMIN;
-            });
+            handleResponse(response, registerButton);
         }
 
+    }
+
+    private void handleResponse(Response response, Button registerButton) {
+        User currentUser = (User) response.getObject();
+        client.setCurrentUser(currentUser);
+        Scene scene = registerButton.getScene();
+        SceneManager.loadScene(switch (currentUser.getRole()) {
+            case USER -> Screen.HOME_USER;
+            case ADMIN -> Screen.HOME_ADMIN;
+        });
     }
 
     private boolean areLoginAndPasswordCorrect() {

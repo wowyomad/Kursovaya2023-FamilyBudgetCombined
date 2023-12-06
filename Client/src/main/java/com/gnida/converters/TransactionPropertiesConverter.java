@@ -3,6 +3,7 @@ package com.gnida.converters;
 import com.gnida.entity.Budget;
 import com.gnida.entity.Category;
 import com.gnida.entity.User;
+import com.gnida.entity.UserInfo;
 import javafx.util.StringConverter;
 
 import java.math.BigDecimal;
@@ -11,6 +12,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class TransactionPropertiesConverter {
+
+
 
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -33,11 +36,15 @@ public class TransactionPropertiesConverter {
     public final StringConverter<User> userToStringConverter = new StringConverter<User>() {
         @Override
         public String toString(User user) {
-            if (user != null)
+            if (user == null) return "";
+            UserInfo info = user.getInfo();
+            if (info != null) {
+                return user.getLogin() + " " + info.getFirstName() + " " + info.getSecondName();
+            } else {
                 return user.getLogin();
-            else
-                return "";
+            }
         }
+
 
         @Override
         public User fromString(String s) {
@@ -49,7 +56,7 @@ public class TransactionPropertiesConverter {
         @Override
         public String toString(Budget budget) {
             if (budget != null)
-                return budget.getName();
+                return budget.getName() + "(Владелец: " + budget.getOwner().getLogin() + ")";
             else
                 return "";
         }

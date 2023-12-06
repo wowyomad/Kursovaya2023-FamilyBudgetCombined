@@ -4,18 +4,23 @@ import com.gnida.ClientSessionNotFound;
 import com.gnida.Server;
 import com.gnida.entity.Budget;
 import com.gnida.entity.User;
+import com.gnida.mapping.DeleteMapping;
 import com.gnida.mapping.GetMapping;
 import com.gnida.mapping.PostMapping;
+import com.gnida.mapping.UpdateMapping;
 import com.gnida.mappings.Mapping;
 import com.gnida.model.Request;
 import com.gnida.model.Response;
 import com.gnida.service.BudgetService;
 import com.gnida.service.UserBudgetService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.aot.PublicMethodReflectiveProcessor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
+import javax.xml.transform.OutputKeys;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -45,6 +50,38 @@ public class BudgetController implements IController {
                 .build();
     }
 
+    @DeleteMapping(Mapping.Budget.budget)
+    public Response delete(Request request) {
+        try {
+            Budget budget = (Budget) request.getObject();
+            budgetService.delete(budget);
+            return Response.builder().status(Response.Status.OK).build();
+        } catch(ClassCastException | NullPointerException e) {
+            return Response.IncorrectDataPassed;
+        }
+    }
+
+    @UpdateMapping(Mapping.Budget.budget)
+    public Response update(Request request) {
+        try {
+            Budget budget = (Budget) request.getObject();
+            Optional<Budget> result = budgetService.update(budget);
+            if(result.isPresent()) {
+                return Response.builder()
+                        .status(Response.Status.OK)
+                        .message("Информация о бюджете успешно обновлена")
+                        .build();
+            } else {
+                return Response.builder()
+                        .status(Response.Status.DAUN_NA_RAZRABE)
+                        .message("Не получилось сохранить бюджет")
+                        .build();
+            }
+        } catch(ClassCastException | NullPointerException e) {
+            return Response.IncorrectDataPassed;
+        }
+    }
+
     @GetMapping(Mapping.Budget.current_user)
     public Response findByCurrentUser(Request request) {
         User currentUser = null;
@@ -64,7 +101,7 @@ public class BudgetController implements IController {
         int userId = user.getId();
         List<Budget> budgets = budgetService.findAllByUserId(userId);
         budgets.forEach(budget -> {
-            User owner = userBudgetService.findOwnerByBudgetId(budget.getId());
+            User owner = userBudgetService.findOwnerByBudgetId(budget);
             budget.setOwner(owner);
         });
         return Response.builder()

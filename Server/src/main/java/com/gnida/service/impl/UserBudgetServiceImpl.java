@@ -32,8 +32,8 @@ public class UserBudgetServiceImpl implements UserBudgetService {
     }
 
     @Override
-    public User findOwnerByBudgetId(Integer budgetId) {
-        return repository.findLeaderByBudgetId(budgetId );
+    public User findOwnerByBudgetId(Budget budget) {
+        return repository.findLeaderByBudgetId(budget) ;
     }
 
 }

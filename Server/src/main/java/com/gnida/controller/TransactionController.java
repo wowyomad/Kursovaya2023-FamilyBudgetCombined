@@ -40,7 +40,11 @@ public class TransactionController implements IController {
     Response postTransaction(Request request) {
         try {
             Transaction transaction = (Transaction) request.getObject();
-            transactionService.save(transaction);
+            Transaction savedTransaction = transactionService.save(transaction);
+            return Response.builder()
+                    .status(Response.Status.OK)
+                    .object(savedTransaction)
+                    .build();
 
         } catch (ClassCastException | NullPointerException e) {
             e.printStackTrace();

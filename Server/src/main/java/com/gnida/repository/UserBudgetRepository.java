@@ -15,6 +15,6 @@ public interface UserBudgetRepository extends JpaRepository<UserBudget, UserBudg
     @Query("SELECT ub.id.budget FROM UserBudget ub WHERE ub.id.user = :userId")
     Budget findAllByUserId(@Param("userId") Integer userId);
 
-    @Query("SELECT ub.id.user FROM UserBudget ub WHERE ub.role = 'LEADER' AND ub.id.budget = :budgetId")
-    User findLeaderByBudgetId(@Param("budgetId") Integer budgetId);
+    @Query("SELECT ub.id.user FROM UserBudget ub WHERE ub.role = 'LEADER' AND ub.id.budget = :budget")
+    User findLeaderByBudgetId(@Param("budget") Budget budget);
 }

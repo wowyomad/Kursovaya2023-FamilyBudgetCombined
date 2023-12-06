@@ -7,25 +7,26 @@ import com.gnida.entity.Category;
 import com.gnida.entity.Transaction;
 import com.gnida.entity.User;
 import com.gnida.fxmlcontroller.GenericController;
+import com.gnida.fxmlcontroller.windows.Theme;
 import com.gnida.model.Response;
 import com.gnida.requests.SuperRequest;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
+import org.controlsfx.control.textfield.TextFields;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
-// Class definition
 public class TransactionsUserController extends GenericController {
 
     public TableView<Transaction> tableView;
@@ -38,19 +39,34 @@ public class TransactionsUserController extends GenericController {
     public PTableColumn<Transaction, Budget> budgetColumn;
 
     private ObservableList<Transaction> transactionList;
+    private List<Category> transactionCategories;
 
     TransactionPropertiesConverter converter = new TransactionPropertiesConverter();
 
-    @Override
-    protected void initialize() {
-        super.initialize();
+    void refreshTransactions(boolean receiveFromServer) {
+        if (receiveFromServer) {
+            Response response = client.sendRequest(SuperRequest.GET_TRANSACTIONS_BY_BUDGET.object(client.getBudget()).build());
+            if (!Response.Status.OK.equals(response.getStatus())) {
+                throw new RuntimeException("BEDA!");
+            }
+            try {
+                if(response.getObject() == null) {
+                    transactionList.removeAll();
+                    return;
+                }
+                List<Transaction> transactions = (List<Transaction>) response.getObject();
 
-        Response response = client.sendRequest(SuperRequest.GET_TRANSACTIONS_BY_BUDGET.build());
-        if(!Response.Status.OK.equals(response.getStatus())) {
-            throw new RuntimeException("BEDA!");
+                transactionList.setAll(transactions);
+                tableView.refresh();
+            } catch (ClassCastException | NullPointerException e) {
+                System.out.println("ой");
+            }
         }
-        transactionList.setAll((List<Transaction>) response.getObject());
+    }
 
+    void initTable() {
+        transactionList = tableView.getItems();
+        refreshTransactions(true);
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -74,7 +90,6 @@ public class TransactionsUserController extends GenericController {
         userColumn.setOnEditCommit(event -> event.getRowValue().setUser(event.getNewValue()));
         budgetColumn.setOnEditCommit(event -> event.getRowValue().setBudget(event.getNewValue()));
 
-        tableView.setItems(transactionList);
 
         ContextMenu contextMenu = new ContextMenu();
         MenuItem addMenuItem = new MenuItem("Добавить");
@@ -89,12 +104,21 @@ public class TransactionsUserController extends GenericController {
         userColumn.setEditable(false);
     }
 
+    @Override
+    protected void initialize() {
+        super.initialize();
+        initTable();
+
+    }
+
     private void handleDelete(ActionEvent event) {
         Transaction selectedItem = tableView.getSelectionModel().getSelectedItem();
         Dialog<Transaction> dialog = new Dialog<>();
         dialog.setTitle("Удалить транзакцию");
         dialog.setHeaderText("Вы уверены, что хотите удалить?");
         DialogPane pane = dialog.getDialogPane();
+        pane.getStylesheets().clear();
+        pane.getStylesheets().add(Theme.DARK_THEME);
 
         ButtonType confirmButtonType = new ButtonType("Удалить", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelButtonType = new ButtonType("Не удалять", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -112,12 +136,27 @@ public class TransactionsUserController extends GenericController {
         Optional<Transaction> result = dialog.showAndWait();
 
         result.ifPresent(transaction -> {
-            transactionList.remove(transaction);
-            tableView.refresh();
+            Task<Response> deleteTask = new Task<Response>() {
+                @Override
+                protected Response call() throws Exception {
+                    return client.sendRequest(
+                            SuperRequest.DELETE_TRANSACTION_TRANSACTION
+                                    .object(transaction)
+                                    .build());
+                }
+            };
+            deleteTask.setOnSucceeded(e -> {
+                refreshTransactions(true);
+            });
+            deleteTask.setOnFailed(e -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+            });
         });
     }
 
     private void handleAddMenuItem(ActionEvent event) {
+        Transaction transaction = new Transaction();
+
         Dialog<Transaction> dialog = new Dialog<>();
         dialog.setTitle("Добавить новую транзакцию");
         dialog.setHeaderText("Введите данные новой транзакции");
@@ -133,27 +172,21 @@ public class TransactionsUserController extends GenericController {
         category1.setName("Food");
         Category category2 = new Category();
         category2.setName("Transport");
-        categoryComboBox.setItems(FXCollections.observableArrayList(category1, category2));
+        Category addCategory = new Category();
+        addCategory.setName("...");
+        categoryComboBox.setItems(FXCollections.observableArrayList(category1, category2, addCategory));
+        categoryComboBox.setOnAction(e -> {
+            Category selectedCategory = categoryComboBox.getValue();
+            if (selectedCategory == addCategory) {
+                // Handle the case when "..." is selected
+                openAddCategoryDialog();
+            }
+        });
         Label commentLabel = new Label("Комментарий:");
         Button commentButton = new Button("Редактировать");
-        Label userLabel = new Label("Пользователь:");
-        ComboBox<User> userComboBox = new ComboBox<>();
-        userComboBox.setConverter(converter.userToStringConverter);
-        User user1 = new User();
-        user1.setLogin("1234");
-        user1.setId(1);
-        User user2 = new User();
-        user2.setLogin("1234");
-        user2.setId(2);
-        userComboBox.setItems(FXCollections.observableArrayList(user1, user2));
-        Label budgetLabel = new Label("Бюджет:");
-        ComboBox<Budget> budgetComboBox = new ComboBox<>();
-        budgetComboBox.setConverter(converter.budgetToStringConverter);
-        Budget budget1 = new Budget();
-        budget1.setName("Бюджет 1");
-        Budget budget2 = new Budget();
-        budget2.setName("Бюджет 2");
-        budgetComboBox.setItems(FXCollections.observableArrayList(budget1, budget2));
+        commentButton.setOnAction(e -> showCommentDialog(transaction));
+
+
 
         GridPane gridPane = new GridPane();
         gridPane.setHgap(10);
@@ -166,62 +199,48 @@ public class TransactionsUserController extends GenericController {
         gridPane.add(categoryComboBox, 1, 2);
         gridPane.add(commentLabel, 0, 3);
         gridPane.add(commentButton, 1, 3);
-        gridPane.add(userLabel, 0, 4);
-        gridPane.add(userComboBox, 1, 4);
-        gridPane.add(budgetLabel, 0, 5);
-        gridPane.add(budgetComboBox, 1, 5);
 
         dialog.getDialogPane().setContent(gridPane);
 
         ButtonType confirmButtonType = new ButtonType("Подтвердить", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().add(confirmButtonType);
 
-        // Set the result converter for the dialog to create a new transaction from the fields
         dialog.setResultConverter(buttonType -> {
             if (buttonType == confirmButtonType) {
-                // Get the values from the fields
                 Date date = converter.dateConverter.fromString(datePicker.getValue().toString());
                 BigDecimal amount = converter.bigDecimalConverter.fromString(amountField.getText());
                 Category category = categoryComboBox.getValue();
-                String comment = commentButton.getText();
-                User user = userComboBox.getValue();
-                Budget budget = budgetComboBox.getValue();
+                Budget budget = client.getBudget();
 
-                // Create a new transaction with the values
-                Transaction transaction = new Transaction();
                 transaction.setDate(date);
                 transaction.setAmount(amount);
                 transaction.setCategory(category);
-                transaction.setComment(comment);
-                transaction.setUser(user);
+                transaction.setUser(client.getCurrentUser());
                 transaction.setBudget(budget);
 
-                // Return the new transaction
                 return transaction;
             } else {
-                // Return null if the button is not confirm
                 return null;
             }
         });
 
-        // Show the dialog and wait for the result
         Optional<Transaction> result = dialog.showAndWait();
 
-        // If the result is present, add it to the transaction list and refresh the table view
-        result.ifPresent(transaction -> {
-            transactionList.add(transaction);
+        result.ifPresent(tr -> {
+            transactionList.add(tr);
             tableView.refresh();
         });
     }
 
-    // A method to create a cell factory for the Category column
+    private void openAddCategoryDialog() {
+    }
+
     private Callback<TableColumn<Transaction, Category>, TableCell<Transaction, Category>> getCategoryCellFactory() {
         return column -> new TableCell<>() {
             @Override
             protected void updateItem(Category item, boolean empty) {
                 super.updateItem(item, empty);
 
-                // If the cell is not empty, set the text to the category name
                 if (!empty) {
                     setText(item.getName());
                 } else {
@@ -233,9 +252,7 @@ public class TransactionsUserController extends GenericController {
             public void startEdit() {
                 super.startEdit();
 
-                // If the cell is editable, create a combo box to edit the category
                 if (isEditable()) {
-                    // Create a combo box with the available categories
                     ComboBox<Category> comboBox = new ComboBox<>();
                     comboBox.setConverter(converter.categoryToStringConverter);
                     Category category1 = new Category();
@@ -244,16 +261,12 @@ public class TransactionsUserController extends GenericController {
                     category2.setName("Transport");
                     comboBox.setItems(FXCollections.observableArrayList(category1, category2));
 
-                    // Set the cell graphic to the combo box
                     setGraphic(comboBox);
 
-                    // Set the cell text to null
                     setText(null);
 
-                    // Set the combo box value to the current category
                     comboBox.setValue(getItem());
 
-                    // Add a listener to the combo box value to commit the edit and update the table view
                     comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
                         commitEdit(newValue);
                         tableView.refresh();
@@ -263,14 +276,12 @@ public class TransactionsUserController extends GenericController {
         };
     }
 
-    // A method to create a cell factory for the User column
     private Callback<TableColumn<Transaction, User>, TableCell<Transaction, User>> getUserCellFactory() {
         return column -> new TableCell<>() {
             @Override
             protected void updateItem(User item, boolean empty) {
                 super.updateItem(item, empty);
 
-                // If the cell is not empty, set the text to the user name
                 if (!empty) {
                     setText(item.getLogin());
                 } else {
@@ -282,9 +293,7 @@ public class TransactionsUserController extends GenericController {
             public void startEdit() {
                 super.startEdit();
 
-                // If the cell is editable, create a combo box to edit the user
                 if (isEditable()) {
-                    // Create a combo box with the available users
                     ComboBox<User> comboBox = new ComboBox<>();
                     comboBox.setConverter(converter.userToStringConverter);
                     User user1 = new User();
@@ -295,16 +304,12 @@ public class TransactionsUserController extends GenericController {
                     user2.setId(2);
                     comboBox.setItems(FXCollections.observableArrayList(user1, user2));
 
-                    // Set the cell graphic to the combo box
                     setGraphic(comboBox);
 
-                    // Set the cell text to null
                     setText(null);
 
-                    // Set the combo box value to the current user
                     comboBox.setValue(getItem());
 
-                    // Add a listener to the combo box value to commit the edit and update the table view
                     comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
                         commitEdit(newValue);
                         tableView.refresh();
@@ -314,14 +319,12 @@ public class TransactionsUserController extends GenericController {
         };
     }
 
-    // A method to create a cell factory for the Budget column
     private Callback<TableColumn<Transaction, Budget>, TableCell<Transaction, Budget>> getBudgetCellFactory() {
         return column -> new TableCell<>() {
             @Override
             protected void updateItem(Budget item, boolean empty) {
                 super.updateItem(item, empty);
 
-                // If the cell is not empty, set the text to the budget name
                 if (!empty) {
                     setText(item.getName());
                 } else {
@@ -333,9 +336,7 @@ public class TransactionsUserController extends GenericController {
             public void startEdit() {
                 super.startEdit();
 
-                // If the cell is editable, create a combo box to edit the budget
                 if (isEditable()) {
-                    // Create a combo box with the available budgets
                     ComboBox<Budget> comboBox = new ComboBox<>();
                     comboBox.setConverter(converter.budgetToStringConverter);
                     Budget budget1 = new Budget();
@@ -344,16 +345,12 @@ public class TransactionsUserController extends GenericController {
                     budget2.setName("Бюджет 2");
                     comboBox.setItems(FXCollections.observableArrayList(budget1, budget2));
 
-                    // Set the cell graphic to the combo box
                     setGraphic(comboBox);
 
-                    // Set the cell text to null
                     setText(null);
 
-                    // Set the combo box value to the current budget
                     comboBox.setValue(getItem());
 
-                    // Add a listener to the combo box value to commit the edit and update the table view
                     comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
                         commitEdit(newValue);
                         tableView.refresh();
@@ -363,7 +360,6 @@ public class TransactionsUserController extends GenericController {
         };
     }
 
-    // A method to create a dialog for the Comment column
     private void showCommentDialog(Transaction transaction) {
         // Create a dialog to edit the comment
         Dialog<String> dialog = new Dialog<>();

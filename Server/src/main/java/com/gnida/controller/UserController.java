@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gnida.ClientSessionNotFound;
 import com.gnida.Main;
 import com.gnida.Server;
-import com.gnida.converter.Converter;
+import com.gnida.utils.JsonConverter;
 import com.gnida.entity.User;
 import com.gnida.entity.UserInfo;
 import com.gnida.mapping.GetMapping;
@@ -27,7 +27,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Component
 public class UserController implements IController {
-    ObjectMapper mapper = Converter.getInstance();
+    ObjectMapper mapper = JsonConverter.getInstance();
     ModelMapper modelMapper = new ModelMapper();
 
     @NonNull
@@ -102,7 +102,7 @@ public class UserController implements IController {
         userService.save(user);
         return Response.builder()
                 .status(Response.Status.OK)
-                .object(Converter.toJson(user))
+                .object(JsonConverter.toJson(user))
                 .message("Информация о пользователе сохранена")
                 .build();
     }

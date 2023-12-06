@@ -2,27 +2,31 @@
 package com.gnida.fxmlcontroller.user;
 
 import com.gnida.PTableColumn;
+import com.gnida.SceneManager;
+import com.gnida.converters.BudgetPropertiesConverter;
 import com.gnida.entity.Budget;
 import com.gnida.entity.User;
 import com.gnida.fxmlcontroller.GenericController;
+import com.gnida.fxmlcontroller.windows.Screen;
+import com.gnida.model.Response;
+import com.gnida.requests.SuperRequest;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
-import javafx.util.StringConverter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 
-// Class definition
 public class BudgetsUserController extends GenericController {
 
     public TableView<Budget> tableView;
@@ -38,71 +42,13 @@ public class BudgetsUserController extends GenericController {
 
     private ObservableList<Budget> budgetList;
 
-    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    private ObservableList<User> userList;
 
-    private StringConverter<BigDecimal> bigDecimalConverter = new StringConverter<>() {
-        @Override
-        public String toString(BigDecimal object) {
-            return object == null ? "" : object.toString();
-        }
+    private BudgetPropertiesConverter converter = new BudgetPropertiesConverter();
 
-        @Override
-        public BigDecimal fromString(String string) {
-            try {
-                return new BigDecimal(string);
-            } catch (NumberFormatException e) {
-                return BigDecimal.ZERO;
-            }
-        }
-    };
-
-    private StringConverter<User> userToStringConverter = new StringConverter<User>() {
-        @Override
-        public String toString(User user) {
-            if (user != null)
-                return user.getLogin();
-            else
-                return "";
-        }
-
-        @Override
-        public User fromString(String s) {
-            return null;
-        }
-    };
-    private StringConverter<LocalDateTime> localDateTimeConverter = new StringConverter<>() {
-        @Override
-        public String toString(LocalDateTime object) {
-            return object == null ? "" : object.format(dateTimeFormatter);
-        }
-
-        @Override
-        public LocalDateTime fromString(String string) {
-            try {
-                return LocalDateTime.parse(string, dateTimeFormatter);
-            } catch (Exception e) {
-                return LocalDateTime.now();
-            }
-        }
-    };
-
-    @Override
-    protected void initialize() {
-        super.initialize();
-
-        budgetList = FXCollections.observableArrayList();
-        Budget budget1 = new Budget();
-        budget1.setId(1);
-        budget1.setName("Бюджет 1");
-        budget1.setInitialAmount(new BigDecimal("1000.00"));
-        budget1.setExpectedExpense(new BigDecimal("500.00"));
-        budget1.setExpectedIncome(new BigDecimal("200.00"));
-        budget1.setStartDate(LocalDateTime.now());
-        budget1.setEndDate(LocalDateTime.now().plusMonths(1));
-        budget1.setLink("1234");
-        budget1.setOwner(new User());
-        budget1.getOwner().setLogin("test1");
-        budgetList.add(budget1);
+    private void initTable() {
+        budgetList = tableView.getItems();
+        refreshBudgets(true);
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -115,36 +61,118 @@ public class BudgetsUserController extends GenericController {
         ownerColumn.setCellValueFactory(new PropertyValueFactory<>("owner"));
 
         nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        initialAmountColumn.setCellFactory(TextFieldTableCell.forTableColumn(bigDecimalConverter));
-        expectedExpenseColumn.setCellFactory(TextFieldTableCell.forTableColumn(bigDecimalConverter));
-        expectedIncomeColumn.setCellFactory(TextFieldTableCell.forTableColumn(bigDecimalConverter));
+        initialAmountColumn.setCellFactory(TextFieldTableCell.forTableColumn(converter.bigDecimalConverter));
+        expectedExpenseColumn.setCellFactory(TextFieldTableCell.forTableColumn(converter.bigDecimalConverter));
+        expectedIncomeColumn.setCellFactory(TextFieldTableCell.forTableColumn(converter.bigDecimalConverter));
         dateTimeStartColumn.setCellFactory(getDateTimeCellFactory());
         dateTimeEndColumn.setCellFactory(getDateTimeCellFactory());
         linkColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         ownerColumn.setCellFactory(getUserCellFactory());
 
-        nameColumn.setOnEditCommit(event -> event.getRowValue().setName(event.getNewValue()));
-        initialAmountColumn.setOnEditCommit(event -> event.getRowValue().setInitialAmount(event.getNewValue()));
-        expectedExpenseColumn.setOnEditCommit(event -> event.getRowValue().setExpectedExpense(event.getNewValue()));
-        expectedIncomeColumn.setOnEditCommit(event -> event.getRowValue().setExpectedIncome(event.getNewValue()));
-        dateTimeStartColumn.setOnEditCommit(event -> event.getRowValue().setStartDate(event.getNewValue()));
-        dateTimeEndColumn.setOnEditCommit(event -> event.getRowValue().setEndDate(event.getNewValue()));
-        linkColumn.setOnEditCommit(event -> event.getRowValue().setLink(event.getNewValue()));
-        ownerColumn.setOnEditCommit(event -> event.getRowValue().setOwner(event.getNewValue()));
+        nameColumn.setOnEditCommit(event -> {
+            event.getRowValue().setName(event.getNewValue());
+            updateBudgetOnServer(event.getRowValue());
+            refreshBudgets(true);
+        });
+
+        initialAmountColumn.setOnEditCommit(event -> {
+            event.getRowValue().setInitialAmount(event.getNewValue());
+            updateBudgetOnServer(event.getRowValue());
+            refreshBudgets(true);
+        });
+
+        expectedExpenseColumn.setOnEditCommit(event -> {
+            event.getRowValue().setExpectedExpense(event.getNewValue());
+            updateBudgetOnServer(event.getRowValue());
+            refreshBudgets(true);
+        });
+
+        expectedIncomeColumn.setOnEditCommit(event -> {
+            event.getRowValue().setExpectedIncome(event.getNewValue());
+            updateBudgetOnServer(event.getRowValue());
+            refreshBudgets(true);
+        });
+
+        dateTimeStartColumn.setOnEditCommit(event -> {
+            event.getRowValue().setStartDate(event.getNewValue());
+            updateBudgetOnServer(event.getRowValue());
+            refreshBudgets(true);
+        });
+
+        dateTimeEndColumn.setOnEditCommit(event -> {
+            event.getRowValue().setEndDate(event.getNewValue());
+            updateBudgetOnServer(event.getRowValue());
+            refreshBudgets(true);
+        });
+
+        linkColumn.setOnEditCommit(event -> {
+            event.getRowValue().setLink(event.getNewValue());
+            updateBudgetOnServer(event.getRowValue());
+            refreshBudgets(true);
+        });
+
+        ownerColumn.setOnEditCommit(event -> {
+            event.getRowValue().setOwner(event.getNewValue());
+            updateBudgetOnServer(event.getRowValue());
+            refreshBudgets(true);
+        });
+
 
         tableView.setItems(budgetList);
 
         ContextMenu contextMenu = new ContextMenu();
         MenuItem addMenuItem = new MenuItem("Добавить");
         MenuItem deleteMenuItem = new MenuItem("Удалить");
+        MenuItem openMenuItem = new MenuItem("Открыть");
         addMenuItem.setOnAction(this::handleAddMenuItem);
         deleteMenuItem.setOnAction(this::handleDelete);
-        contextMenu.getItems().add(addMenuItem);
-        contextMenu.getItems().add(deleteMenuItem);
+        openMenuItem.setOnAction(this::handleOpen);
+        contextMenu.getItems().addAll(addMenuItem, deleteMenuItem, openMenuItem);
         tableView.setContextMenu(contextMenu);
         tableView.setEditable(true);
         idColumn.setEditable(false);
         ownerColumn.setEditable(false);
+    }
+
+    private void updateBudgetOnServer(Budget budget) {
+        Response response = client.sendRequest(SuperRequest.UPDATE_BUDGET_BUDGET.object(budget).build());
+        if (!response.getStatus().equals(Response.Status.OK)) {
+            System.out.println("Не поулчилось обновить");
+        } else {
+            System.out.println("OK");
+        }
+    }
+
+
+    @Override
+    protected void initialize() {
+        super.initialize();
+        initTable();
+
+    }
+
+    private void refreshBudgets(boolean serverRefresh) {
+        if (serverRefresh) {
+            Response response = client.sendRequest(SuperRequest.GET_BUDGETS_BY_CURRENT_USER.build());
+            try {
+                if (response.getObject() == null) {
+                    budgetList.removeAll();
+                } else {
+                    budgetList.setAll((List<Budget>) response.getObject());
+//                tableView.refresh();
+                }
+            } catch (NullPointerException | ClassCastException e) {
+                System.out.println(e);
+                System.out.println("BEDA");
+            }
+        }
+    }
+
+    private void handleOpen(ActionEvent actionEvent) {
+        Budget selectedBudget = tableView.getSelectionModel().getSelectedItem();
+        System.out.println(selectedBudget.getOwner());
+        client.openBudget(selectedBudget);
+        SceneManager.loadScene(Screen.TRANSACTIONS_BUDGET_USER);
     }
 
     private void handleDelete(ActionEvent event) {
@@ -160,7 +188,7 @@ public class BudgetsUserController extends GenericController {
         dialog.getDialogPane().getButtonTypes().add(cancelButtonType);
 
         dialog.setResultConverter(buttonType -> {
-            if(buttonType == confirmButtonType) {
+            if (buttonType == confirmButtonType) {
                 return selectedItem;
             } else {
                 return null;
@@ -170,8 +198,24 @@ public class BudgetsUserController extends GenericController {
         Optional<Budget> result = dialog.showAndWait();
 
         result.ifPresent(budget -> {
-            budgetList.remove(budget);
-            tableView.refresh();
+            Task<Response> deleteTask = new Task<>() {
+                @Override
+                protected Response call() throws Exception {
+                    return client.sendRequest(SuperRequest.DELETE_BUDGET_BUDGET.object(budget).build());
+                }
+            };
+            deleteTask.setOnScheduled(e -> {
+                        System.out.println("VRODE");
+                        refreshBudgets(true);
+                    }
+            );
+            deleteTask.setOnFailed(e -> {
+                System.out.println("Не получилось удалить");
+                System.out.println(e.getSource().getValue());
+            });
+            Thread thread = new Thread(deleteTask);
+            thread.start();
+
         });
     }
 
@@ -199,15 +243,7 @@ public class BudgetsUserController extends GenericController {
         Label linkLabel = new Label("Ссылка:");
         TextField linkField = new TextField();
         Label ownerLabel = new Label("Владелец:");
-        ComboBox<User> ownerComboBox = new ComboBox<>();
-        ownerComboBox.setConverter(userToStringConverter);
-        User user1 = new User();
-        user1.setLogin("1234");
-        user1.setId(1);
-        User user2 = new User();
-        user2.setLogin("1234");
-        user2.setId(2);
-        ownerComboBox.setItems(FXCollections.observableArrayList(user1, user2));
+
 
         GridPane gridPane = new GridPane();
         gridPane.setHgap(10);
@@ -230,22 +266,20 @@ public class BudgetsUserController extends GenericController {
         gridPane.add(endMinuteSpinner, 3, 5);
         gridPane.add(linkLabel, 0, 6);
         gridPane.add(linkField, 1, 6);
-        gridPane.add(ownerLabel, 0, 7);
-        gridPane.add(ownerComboBox, 1, 7);
+
 
         dialog.getDialogPane().setContent(gridPane);
 
         ButtonType confirmButtonType = new ButtonType("Подтвердить", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().add(confirmButtonType);
 
-        // Set the result converter for the dialog to create a new budget from the fields
         dialog.setResultConverter(buttonType -> {
             if (buttonType == confirmButtonType) {
                 // Get the values from the fields
                 String name = nameField.getText();
-                BigDecimal initialAmount = bigDecimalConverter.fromString(initialAmountField.getText());
-                BigDecimal expectedExpense = bigDecimalConverter.fromString(expectedExpenseField.getText());
-                BigDecimal expectedIncome = bigDecimalConverter.fromString(expectedIncomeField.getText());
+                BigDecimal initialAmount = converter.bigDecimalConverter.fromString(initialAmountField.getText());
+                BigDecimal expectedExpense = converter.bigDecimalConverter.fromString(expectedExpenseField.getText());
+                BigDecimal expectedIncome = converter.bigDecimalConverter.fromString(expectedIncomeField.getText());
                 LocalDate startDate = startDatePicker.getValue();
                 LocalTime startTime = LocalTime.of(startHourSpinner.getValue(), startMinuteSpinner.getValue());
                 LocalDateTime startDateTime = LocalDateTime.of(startDate, startTime);
@@ -253,9 +287,7 @@ public class BudgetsUserController extends GenericController {
                 LocalTime endTime = LocalTime.of(endHourSpinner.getValue(), endMinuteSpinner.getValue());
                 LocalDateTime endDateTime = LocalDateTime.of(endDate, endTime);
                 String link = linkField.getText();
-                User owner = ownerComboBox.getValue();
 
-                // Create a new budget with the values
                 Budget budget = new Budget();
                 budget.setName(name);
                 budget.setInitialAmount(initialAmount);
@@ -264,36 +296,46 @@ public class BudgetsUserController extends GenericController {
                 budget.setStartDate(startDateTime);
                 budget.setEndDate(endDateTime);
                 budget.setLink(link);
-                budget.setOwner(owner);
+                budget.setOwner(client.getCurrentUser());
 
-                // Return the new budget
                 return budget;
             } else {
-                // Return null if the button is not confirm
                 return null;
             }
         });
 
-        // Show the dialog and wait for the result
         Optional<Budget> result = dialog.showAndWait();
 
-        // If the result is present, add it to the budget list and refresh the table view
         result.ifPresent(budget -> {
-            budgetList.add(budget);
-            tableView.refresh();
+            System.out.println("Добавляем...");
+            Task<Response> addTask = new Task<>() {
+                @Override
+                protected Response call() throws Exception {
+                    System.out.println("Отправляем...");
+                    return client.sendRequest(SuperRequest.POST_BUDGET_BUDGET.object(budget).build());
+                }
+            };
+            addTask.setOnSucceeded(e -> {
+                System.out.println("VRODE ADDED");
+                refreshBudgets(true);
+            });
+            addTask.setOnFailed(e -> {
+                System.out.println("Не получилось");
+            });
+            Thread thread = new Thread(addTask);
+            thread.start();
+
         });
     }
 
-    // A method to create a cell factory for the LocalDateTime columns
     private Callback<TableColumn<Budget, LocalDateTime>, TableCell<Budget, LocalDateTime>> getDateTimeCellFactory() {
         return column -> new TableCell<>() {
             @Override
             protected void updateItem(LocalDateTime item, boolean empty) {
                 super.updateItem(item, empty);
 
-                // If the cell is not empty, set the text to the formatted date and time
                 if (!empty) {
-                    setText(localDateTimeConverter.toString(item));
+                    setText(converter.localDateTimeConverter.toString(item));
                 } else {
                     setText(null);
                 }
@@ -303,24 +345,19 @@ public class BudgetsUserController extends GenericController {
             public void startEdit() {
                 super.startEdit();
 
-                // If the cell is editable, create a dialog to edit the date and time
                 if (isEditable()) {
-                    // Get the current date and time from the cell
                     LocalDateTime currentDateTime = getItem();
 
-                    // Create a dialog to edit the date and time
                     Dialog<LocalDateTime> dialog = new Dialog<>();
                     dialog.setTitle("Изменить дату и время");
                     dialog.setHeaderText("Выберите новую дату и время");
 
-                    // Create the labels and fields for the dialog
                     Label dateLabel = new Label("Дата:");
                     DatePicker datePicker = new DatePicker(currentDateTime.toLocalDate());
                     Label timeLabel = new Label("Время:");
                     Spinner<Integer> hourSpinner = new Spinner<>(0, 23, currentDateTime.getHour());
                     Spinner<Integer> minuteSpinner = new Spinner<>(0, 59, currentDateTime.getMinute());
 
-                    // Create a grid pane to layout the labels and fields
                     GridPane gridPane = new GridPane();
                     gridPane.setHgap(10);
                     gridPane.setVgap(10);
@@ -347,10 +384,8 @@ public class BudgetsUserController extends GenericController {
                         }
                     });
 
-                    // Show the dialog and wait for the result
                     Optional<LocalDateTime> result = dialog.showAndWait();
 
-                    // If the result is present, commit the edit and update the table view
                     result.ifPresent(newDateTime -> {
                         commitEdit(newDateTime);
                         tableView.refresh();
@@ -360,7 +395,6 @@ public class BudgetsUserController extends GenericController {
         };
     }
 
-    // A method to create a cell factory for the User column
     private Callback<TableColumn<Budget, User>, TableCell<Budget, User>> getUserCellFactory() {
         return column -> new TableCell<>() {
             @Override
@@ -379,9 +413,7 @@ public class BudgetsUserController extends GenericController {
             public void startEdit() {
                 super.startEdit();
 
-                // If the cell is editable, create a combo box to edit the user
                 if (isEditable()) {
-                    // Create a combo box with the available users
                     ComboBox<User> comboBox = new ComboBox<>();
                     User user1 = new User();
                     user1.setLogin("1234");
@@ -391,16 +423,12 @@ public class BudgetsUserController extends GenericController {
                     user2.setId(2);
                     comboBox.setItems(FXCollections.observableArrayList(user1, user2));
 
-                    // Set the cell graphic to the combo box
                     setGraphic(comboBox);
 
-                    // Set the cell text to null
                     setText(null);
 
-                    // Set the combo box value to the current user
                     comboBox.setValue(getItem());
 
-                    // Add a listener to the combo box value to commit the edit and update the table view
                     comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
                         commitEdit(newValue);
                         tableView.refresh();
