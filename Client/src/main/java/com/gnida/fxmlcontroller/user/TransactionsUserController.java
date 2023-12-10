@@ -6,11 +6,11 @@ import com.gnida.entity.Budget;
 import com.gnida.entity.Category;
 import com.gnida.entity.Transaction;
 import com.gnida.entity.User;
+import com.gnida.enums.CategoryType;
 import com.gnida.fxmlcontroller.GenericController;
 import com.gnida.fxmlcontroller.windows.Theme;
 import com.gnida.model.Response;
 import com.gnida.requests.SuperRequest;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -20,10 +20,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
-import org.controlsfx.control.textfield.TextFields;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,9 +39,21 @@ public class TransactionsUserController extends GenericController {
     public PTableColumn<Transaction, Budget> budgetColumn;
 
     private ObservableList<Transaction> transactionList;
-    private List<Category> transactionCategories;
+    private List<Category> budgetCategories;
 
     TransactionPropertiesConverter converter = new TransactionPropertiesConverter();
+
+    void updateCategories() {
+        Response response = client.sendRequest(SuperRequest.GET_BUDGET_CATEGORIES_BY_BUDGET.object(client.getBudget()).build());
+        if (!Response.Status.OK.equals(response.getStatus())) {
+            throw new RuntimeException(response.getStatus().toString());
+        }
+        try {
+            budgetCategories = (List<Category>) response.getObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     void refreshTransactions(boolean receiveFromServer) {
         if (receiveFromServer) {
@@ -50,7 +62,7 @@ public class TransactionsUserController extends GenericController {
                 throw new RuntimeException("BEDA!");
             }
             try {
-                if(response.getObject() == null) {
+                if (response.getObject() == null) {
                     transactionList.removeAll();
                     return;
                 }
@@ -90,7 +102,23 @@ public class TransactionsUserController extends GenericController {
         userColumn.setOnEditCommit(event -> event.getRowValue().setUser(event.getNewValue()));
         budgetColumn.setOnEditCommit(event -> event.getRowValue().setBudget(event.getNewValue()));
 
+        tableView.setEditable(true);
+        idColumn.setEditable(false);
+        dateColumn.setEditable(false);
+        budgetColumn.setEditable(false);
+        userColumn.setEditable(false);
+    }
 
+    @Override
+    protected void initialize() {
+        super.initialize();
+        initTable();
+        initContextMenu();
+        budgetCategories = new ArrayList<>();
+
+    }
+
+    private void initContextMenu() {
         ContextMenu contextMenu = new ContextMenu();
         MenuItem addMenuItem = new MenuItem("Добавить");
         MenuItem deleteMenuItem = new MenuItem("Удалить");
@@ -99,16 +127,6 @@ public class TransactionsUserController extends GenericController {
         contextMenu.getItems().add(addMenuItem);
         contextMenu.getItems().add(deleteMenuItem);
         tableView.setContextMenu(contextMenu);
-        tableView.setEditable(true);
-        idColumn.setEditable(false);
-        userColumn.setEditable(false);
-    }
-
-    @Override
-    protected void initialize() {
-        super.initialize();
-        initTable();
-
     }
 
     private void handleDelete(ActionEvent event) {
@@ -168,24 +186,20 @@ public class TransactionsUserController extends GenericController {
         Label categoryLabel = new Label("Категория:");
         ComboBox<Category> categoryComboBox = new ComboBox<>();
         categoryComboBox.setConverter(converter.categoryToStringConverter);
-        Category category1 = new Category();
-        category1.setName("Food");
-        Category category2 = new Category();
-        category2.setName("Transport");
+
         Category addCategory = new Category();
         addCategory.setName("...");
-        categoryComboBox.setItems(FXCollections.observableArrayList(category1, category2, addCategory));
+        categoryComboBox.getItems().addAll(budgetCategories);
+        categoryComboBox.getItems().add(addCategory);
         categoryComboBox.setOnAction(e -> {
             Category selectedCategory = categoryComboBox.getValue();
             if (selectedCategory == addCategory) {
-                // Handle the case when "..." is selected
                 openAddCategoryDialog();
             }
         });
         Label commentLabel = new Label("Комментарий:");
         Button commentButton = new Button("Редактировать");
         commentButton.setOnAction(e -> showCommentDialog(transaction));
-
 
 
         GridPane gridPane = new GridPane();
@@ -233,6 +247,51 @@ public class TransactionsUserController extends GenericController {
     }
 
     private void openAddCategoryDialog() {
+        Dialog<Category> dialog = new Dialog<>();
+        dialog.setHeaderText(null);
+        dialog.setTitle("Добавление категории");
+        Label nameLabel = new Label("Name:");
+        TextField nameField = new TextField();
+        Label typeLabel = new Label("Type:");
+        ChoiceBox<CategoryType> typeChoice = new ChoiceBox<>(FXCollections.observableArrayList(CategoryType.values()));
+        typeChoice.getSelectionModel().selectFirst();
+
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.add(nameLabel, 0, 0);
+        gridPane.add(nameField, 1, 0);
+        gridPane.add(typeLabel, 0, 1);
+        gridPane.add(typeChoice, 1, 1);
+
+        dialog.getDialogPane().setContent(gridPane);
+
+        ButtonType confirmButtonType = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().add(confirmButtonType);
+
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == confirmButtonType) {
+                String name = nameField.getText();
+                CategoryType type = typeChoice.getValue();
+                Category category = new Category();
+                category.setName(name);
+                category.setType(type);
+                category.setBudgetId(client.getBudget().getId());
+
+                return category;
+            } else {
+                return null;
+            }
+        });
+
+        Optional<Category> result = dialog.showAndWait();
+
+        result.ifPresent(category -> {
+            client.sendRequest(SuperRequest.POST_CATEGORY_CATEGORY.object(category).build());
+            updateCategories();
+        });
+
+
     }
 
     private Callback<TableColumn<Transaction, Category>, TableCell<Transaction, Category>> getCategoryCellFactory() {

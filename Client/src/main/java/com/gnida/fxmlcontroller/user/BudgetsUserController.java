@@ -8,6 +8,7 @@ import com.gnida.entity.Budget;
 import com.gnida.entity.User;
 import com.gnida.fxmlcontroller.GenericController;
 import com.gnida.fxmlcontroller.windows.Screen;
+import com.gnida.fxmlcontroller.windows.Theme;
 import com.gnida.model.Response;
 import com.gnida.requests.SuperRequest;
 import javafx.collections.FXCollections;
@@ -18,6 +19,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 
 import java.math.BigDecimal;
@@ -44,7 +46,21 @@ public class BudgetsUserController extends GenericController {
 
     private ObservableList<User> userList;
 
+
     private BudgetPropertiesConverter converter = new BudgetPropertiesConverter();
+
+    private void initContextMenu() {
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem addMenuItem = new MenuItem("Добавить");
+        MenuItem deleteMenuItem = new MenuItem("Удалить");
+        MenuItem openMenuItem = new MenuItem("Открыть");
+        addMenuItem.setOnAction(this::handleAddMenuItem);
+        deleteMenuItem.setOnAction(this::handleDelete);
+        openMenuItem.setOnAction(this::handleOpen);
+        contextMenu.getItems().addAll(addMenuItem, deleteMenuItem, openMenuItem);
+        tableView.setContextMenu(contextMenu);
+
+    }
 
     private void initTable() {
         budgetList = tableView.getItems();
@@ -68,6 +84,22 @@ public class BudgetsUserController extends GenericController {
         dateTimeEndColumn.setCellFactory(getDateTimeCellFactory());
         linkColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         ownerColumn.setCellFactory(getUserCellFactory());
+
+        linkColumn.setCellFactory(column -> {
+            return new TableCell<Budget, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        setText(item);
+                        setEditable(false);
+                    }
+                }
+            };
+        });
 
         nameColumn.setOnEditCommit(event -> {
             event.getRowValue().setName(event.getNewValue());
@@ -100,9 +132,10 @@ public class BudgetsUserController extends GenericController {
         });
 
         dateTimeEndColumn.setOnEditCommit(event -> {
-            event.getRowValue().setEndDate(event.getNewValue());
-            updateBudgetOnServer(event.getRowValue());
-            refreshBudgets(true);
+                event.getRowValue().setEndDate(event.getNewValue());
+                updateBudgetOnServer(event.getRowValue());
+                refreshBudgets(true);
+
         });
 
         linkColumn.setOnEditCommit(event -> {
@@ -117,18 +150,6 @@ public class BudgetsUserController extends GenericController {
             refreshBudgets(true);
         });
 
-
-        tableView.setItems(budgetList);
-
-        ContextMenu contextMenu = new ContextMenu();
-        MenuItem addMenuItem = new MenuItem("Добавить");
-        MenuItem deleteMenuItem = new MenuItem("Удалить");
-        MenuItem openMenuItem = new MenuItem("Открыть");
-        addMenuItem.setOnAction(this::handleAddMenuItem);
-        deleteMenuItem.setOnAction(this::handleDelete);
-        openMenuItem.setOnAction(this::handleOpen);
-        contextMenu.getItems().addAll(addMenuItem, deleteMenuItem, openMenuItem);
-        tableView.setContextMenu(contextMenu);
         tableView.setEditable(true);
         idColumn.setEditable(false);
         ownerColumn.setEditable(false);
@@ -137,7 +158,7 @@ public class BudgetsUserController extends GenericController {
     private void updateBudgetOnServer(Budget budget) {
         Response response = client.sendRequest(SuperRequest.UPDATE_BUDGET_BUDGET.object(budget).build());
         if (!response.getStatus().equals(Response.Status.OK)) {
-            System.out.println("Не поулчилось обновить");
+            System.out.println("Не поучилось обновить");
         } else {
             System.out.println("OK");
         }
@@ -148,6 +169,7 @@ public class BudgetsUserController extends GenericController {
     protected void initialize() {
         super.initialize();
         initTable();
+        initContextMenu();
 
     }
 
@@ -222,7 +244,12 @@ public class BudgetsUserController extends GenericController {
     private void handleAddMenuItem(ActionEvent event) {
         Dialog<Budget> dialog = new Dialog<>();
         dialog.setTitle("Добавить новый бюджет");
+        dialog.getDialogPane();
         dialog.setHeaderText("Введите данные нового бюджета");
+
+        Pane pane = dialog.getDialogPane();
+        pane.getStylesheets().clear();
+        pane.getStylesheets().add(Theme.DARK_THEME);
 
         Label nameLabel = new Label("Название:");
         TextField nameField = new TextField();
@@ -242,7 +269,6 @@ public class BudgetsUserController extends GenericController {
         Spinner<Integer> endMinuteSpinner = new Spinner<>(0, 59, 0);
         Label linkLabel = new Label("Ссылка:");
         TextField linkField = new TextField();
-        Label ownerLabel = new Label("Владелец:");
 
 
         GridPane gridPane = new GridPane();
@@ -275,7 +301,6 @@ public class BudgetsUserController extends GenericController {
 
         dialog.setResultConverter(buttonType -> {
             if (buttonType == confirmButtonType) {
-                // Get the values from the fields
                 String name = nameField.getText();
                 BigDecimal initialAmount = converter.bigDecimalConverter.fromString(initialAmountField.getText());
                 BigDecimal expectedExpense = converter.bigDecimalConverter.fromString(expectedExpenseField.getText());
@@ -354,6 +379,7 @@ public class BudgetsUserController extends GenericController {
 
                     Label dateLabel = new Label("Дата:");
                     DatePicker datePicker = new DatePicker(currentDateTime.toLocalDate());
+                    datePicker.setConverter(converter.localDateConverter);
                     Label timeLabel = new Label("Время:");
                     Spinner<Integer> hourSpinner = new Spinner<>(0, 23, currentDateTime.getHour());
                     Spinner<Integer> minuteSpinner = new Spinner<>(0, 59, currentDateTime.getMinute());
@@ -376,6 +402,7 @@ public class BudgetsUserController extends GenericController {
                         if (buttonType == confirmButtonType) {
                             // Get the values from the fields
                             LocalDate date = datePicker.getValue();
+                            System.out.println(date);
                             LocalTime time = LocalTime.of(hourSpinner.getValue(), minuteSpinner.getValue());
 
                             return LocalDateTime.of(date, time);

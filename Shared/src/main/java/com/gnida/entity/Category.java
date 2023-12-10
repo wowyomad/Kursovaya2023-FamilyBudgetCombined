@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Set;
 
 
 @Entity
@@ -27,5 +26,17 @@ public class Category implements Serializable {
     @Column(name = "budget_id", nullable = false)
     private int budgetId;
 
+    @Override
+    public String toString() {
+        if (name.equals("...")) {
+            return "...";
+        }
 
+        return "Category{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", budgetId=" + budgetId +
+                '}';
+    }
 }

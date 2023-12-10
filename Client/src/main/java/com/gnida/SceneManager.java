@@ -1,13 +1,10 @@
 package com.gnida;
 
-import com.gnida.fxmlcontroller.GenericController;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.support.ScopeNotActiveException;
 
 import java.io.IOException;
 import java.util.Stack;
@@ -20,12 +17,12 @@ public class SceneManager {
 
     public static void loadScene(String next) {
         FXMLLoader fxmlLoader =new FXMLLoader(Main.class.getResource(next));
-
-        roots.push(mainScene.getRoot());
         try {
             fxmlLoader.load();
+            roots.push(mainScene.getRoot());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("No screen loaded");
+            e.printStackTrace();
         }
         mainScene.setRoot(fxmlLoader.getRoot());
 
@@ -35,7 +32,7 @@ public class SceneManager {
         if(!roots.isEmpty()) {
             current.setRoot(roots.pop());
         } else  {
-            Platform.exit();
+            PrefabDialogs.exitDialog(null);
         }
     }
 

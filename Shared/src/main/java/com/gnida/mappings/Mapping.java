@@ -24,6 +24,8 @@ public final class Mapping {
     }
     public static final class Category {
 
+        public static final String budget = "/budget";
+        public static final String category = "/category";
     }
 
 }

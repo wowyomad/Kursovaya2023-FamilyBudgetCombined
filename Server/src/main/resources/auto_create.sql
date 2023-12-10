@@ -23,7 +23,6 @@ create table user_info
 );
 
 
-
 CREATE TABLE budget
 (
     budget_id         INT PRIMARY KEY AUTO_INCREMENT,

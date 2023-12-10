@@ -2,6 +2,7 @@ package com.gnida;
 
 import com.gnida.controller.Dispatcher;
 import com.gnida.entity.User;
+import com.gnida.logging.LOGGER;
 import com.gnida.model.Request;
 import com.gnida.model.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,9 @@ public class ClientThread implements Runnable {
             while (clientSocket.isConnected()) {
                 Request request = (Request) objectIn.readObject();
                 request.setSessionId(clientSessionId);
-                System.out.println(request);
+                LOGGER.log(request.toString());
                 Response response = dispatcher.dispatch(request);
-                System.out.println(response);
+                LOGGER.log(response.toString());
                 objectOut.writeObject(response);
             }
         } catch (SocketException e) {

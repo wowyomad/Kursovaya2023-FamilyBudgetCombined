@@ -6,9 +6,11 @@ import com.gnida.model.Response;
 import com.gnida.repository.CategoryRepository;
 import com.gnida.service.CategoryService;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
     @NonNull CategoryRepository repository;
@@ -35,7 +37,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Response addCategory(Category category) {
-        if(repository.findById(category.getId()) != null) {
+        if(repository.findById(category.getId()).isPresent()) {
+            System.out.println("ввв");
             return Response.IncorrectDataPassed;
         }
         Category saved = repository.save(category);
@@ -47,9 +50,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Response deleteCategory(Category category) {
-        if (repository.findById(category.getId()) == null) {
-            return Response.IncorrectDataPassed;
-        }
         repository.delete(category);
         return Response.builder()
                 .status(Response.Status.OK)
